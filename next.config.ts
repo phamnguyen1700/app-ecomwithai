@@ -1,15 +1,11 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  async redirects() {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  basePath: '', // hoặc không khai báo nếu không dùng
+  async rewrites() {
     return [
-      {
-        source: "/",
-        destination: "/ecom/home",
-        permanent: true, 
-      },
-    ];
+      { source: '/', destination: '/ecom/home' },
+    ]
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
