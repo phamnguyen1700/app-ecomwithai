@@ -2,13 +2,19 @@ import {
     LucideProps,
     Search,
     User,
-    ShoppingBag
+    ShoppingBag,
+    Send,
+    Minus,
+    Bot
   } from "lucide-react";
   
   const icons = {
     search: Search,
     user: User,
-    shoppingBag: ShoppingBag
+    shoppingBag: ShoppingBag,
+    send: Send,
+    minus: Minus,
+    bot: Bot
   };
   
   interface IconProps extends LucideProps {
@@ -19,6 +25,7 @@ import {
     name,
     size = 24,
     className,
+    color,
     ...props
   }: IconProps) {
     const IconComponent = icons[name];
@@ -30,7 +37,7 @@ import {
   
     return (
       <div className="flex items-center justify-center">
-        <IconComponent size={size} className={className} {...props} />
+        <IconComponent size={size} className={className} color={color} {...props} />
       </div>
     );
   }
