@@ -5,7 +5,10 @@ import {
     ShoppingBag,
     Send,
     Minus,
-    Bot
+    Bot,
+    Star,
+    StarHalf,
+    ShoppingBasket
   } from "lucide-react";
   
   const icons = {
@@ -14,14 +17,17 @@ import {
     shoppingBag: ShoppingBag,
     send: Send,
     minus: Minus,
-    bot: Bot
+    bot: Bot,
+    star: Star,
+    starHalf: StarHalf,
+    shoppingBasket: ShoppingBasket
   };
   
   interface IconProps extends LucideProps {
     name: keyof typeof icons;
   }
   
-  export default function Icon({
+  export default function Icon({  
     name,
     size = 24,
     className,
