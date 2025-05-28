@@ -1,10 +1,14 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  basePath: '', // hoặc không khai báo nếu không dùng
-  async rewrites() {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async redirects() {
     return [
-      { source: '/', destination: '/ecom/home' },
-    ]
+      {
+        source: "/",
+        destination: "/ecom/home",
+        permanent: true, 
+      },
+    ];
   },
 };
 
