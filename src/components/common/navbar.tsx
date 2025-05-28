@@ -21,10 +21,10 @@ export default function Navbar() {
       <div className="flex-initial w-1/2">
         <ul className="flex space-x-4 text-sm font-medium">
           <li>
-            <Link href="/">Home</Link>
+            <Link href="/">Trang Chủ</Link>
           </li>
           <li>
-            <Link href="/apparel">Apparel</Link>
+            <Link href="/ecom/product">Sản Phẩm</Link>
           </li>
           <li>
             <Link href="/accessories">Accessories</Link>
