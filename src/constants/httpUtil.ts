@@ -1,0 +1,1 @@
+export const HTTP_CONTENT_TYPE = 'application/json';
