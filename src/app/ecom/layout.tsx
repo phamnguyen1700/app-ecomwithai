@@ -25,7 +25,7 @@ export default function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
                 <Navbar />
-                <div className="mt-[69px] container">
+                <div className="mt-[69px] container mx-auto">
                     {children}
                 </div>
                 <CommerceGPT />

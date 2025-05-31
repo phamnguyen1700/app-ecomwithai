@@ -4,3 +4,11 @@ export const routesConfig = {
     register: "/register",
     products: "/products",
 };
+export const images = {
+    logo: '/assets/logo.png',
+    home: '/assets/home.png',
+    acne: '/assets/ance.png',
+    skin: '/assets/skin.png',
+    skincr: '/assets/skincr.png',
+    about: '/assets/about.png',
+}
