@@ -2,7 +2,7 @@ export const routesConfig = {
     home: "/ecom/home",
     login: "/login",
     register: "/register",
-    products: "/products",
+    products: "/ecom/product",
 };
 export const images = {
     logo: '/assets/logo.png',
