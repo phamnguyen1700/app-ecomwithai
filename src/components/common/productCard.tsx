@@ -12,10 +12,12 @@ interface IProductCardProps {
 
 export default function ProductCard({ product, onCompare }: IProductCardProps) {
   const router = useRouter();
-  const productImage =
-    product.images?.[0] && product.images[0].trim() !== ""
-      ? product.images[0]
-      : "/assets/blank.png";
+  console.log(product);
+  
+  // const productImage =
+  //   product.images?.[0] && product.images[0].trim() !== ""
+  //     ? product.images[0]
+  //     : "/assets/blank.png";
 
   const handleCardClick = () => {
     router.push(`/commercial/products/${product._id}`);
@@ -28,7 +30,7 @@ export default function ProductCard({ product, onCompare }: IProductCardProps) {
     >
       <div className="relative w-full h-64">
         <Image
-          src={productImage}
+          src={product.image}
           alt={product.name}
           fill
           className="rounded-t-lg border border-gray-200 object-cover"
