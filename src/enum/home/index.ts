@@ -1,5 +1,5 @@
 export enum HomeTypes {
-    HOME = "home",
+    HOME = "Care For Your Skin, Care For Your Beauty",
     DESCRIPTION = "Welcome to the home page of our e-commerce platform. Explore our products and enjoy your shopping experience!",
     PRODUCTS = "products",
     CART = "cart",

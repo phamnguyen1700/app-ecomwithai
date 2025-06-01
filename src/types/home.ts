@@ -17,4 +17,9 @@ export interface FlexSectionProps {
   buttonLabel?: string;
   onButtonClick?: () => void;
   children?: React.ReactNode;
+  width?: number;
+  height?: number;
+  textRight?: boolean;
+  border?: boolean;
+  bigTitle?: boolean;
 }

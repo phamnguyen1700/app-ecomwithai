@@ -10,16 +10,21 @@ const ShowInfo: React.FC<FlexSectionProps> = ({
     reverse = false,
     buttonLabel,
     onButtonClick,
+    width = 500,
+    height = 300,
+    textRight = false,
+    border = false,
+    bigTitle = false,
     children,
 }) => {
     return (
         <div
-            className={`flex flex-col-reverse md:flex-row items-center gap-8 py-10 ${
+            className={`flex flex-col-reverse md:flex-row items-center py-10 ${
                 reverse ? "md:flex-row-reverse" : ""
             }`}
         >
-            <div className="flex-1 text-left px-4">
-                <h2 className="text-2xl md:text-3xl font-semibold text-[color:var(--primary)] mb-4">
+            <div className={`flex-1 ${textRight ? 'text-right' : ''} text-left px-4`}>
+                <h2 className={`${bigTitle ? 'text-6xl' : 'text-4xl'} font-semibold text-[color:var(--primary)] mb-4`}>
                     {title}
                 </h2>
                 {description && (
@@ -29,7 +34,7 @@ const ShowInfo: React.FC<FlexSectionProps> = ({
                 {buttonLabel && (
                     <Button
                         onClick={onButtonClick}
-                        className="text-[color:var(--primary)] font-semibold px-0"
+                        className="text-[color:var(--primary)] font-semibold px-0 text-2xl"
                         variant="link"
                     >
                         {buttonLabel} &gt;
@@ -41,9 +46,11 @@ const ShowInfo: React.FC<FlexSectionProps> = ({
                 <Image
                     src={image}
                     alt={title}
-                    width={450}
-                    height={300}
-                    className="object-contain mx-auto"
+                    width={width}
+                    height={height}
+                    loading="lazy"
+                    quality={100}
+                    className={`object-contain mx-auto ${border ? 'border-[1px] border-[#BF6159] rounded-lg' : ''}`}
                 />
             </div>
         </div>

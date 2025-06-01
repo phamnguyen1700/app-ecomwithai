@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/common/navbar";
 import "@/app/globals.css";
 import CommerceGPT from "@/components/common/commerce-gpt";
+import Footer from "@/components/common/Footer";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -25,9 +26,8 @@ export default function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
                 <Navbar />
-                <div className="mt-[69px] container mx-auto">
-                    {children}
-                </div>
+                <div className="mt-[69px] container mx-auto">{children}</div>
+                <Footer />
                 <CommerceGPT />
             </body>
         </html>

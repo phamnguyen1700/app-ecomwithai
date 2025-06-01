@@ -11,4 +11,5 @@ export const images = {
     skin: '/assets/skin.png',
     skincr: '/assets/skincr.png',
     about: '/assets/about.png',
+    skinType: '/assets/skin_type.png',
 }
