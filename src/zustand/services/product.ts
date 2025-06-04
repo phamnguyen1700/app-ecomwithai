@@ -1,6 +1,6 @@
-import axios from "axios";
+import { IProduct } from "@/types/product";
+import { get } from "@/util/Http";
 
 export const getAllProducts = async () => {
-    const response = await axios.get(process.env.NEXT_PUBLIC_API_URL || '')
-    return response.data;
-}
+    return await get<IProduct[]>("");
+};

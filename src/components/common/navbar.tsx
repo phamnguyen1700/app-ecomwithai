@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
 import Icon from "@/components/assests/icons"
+import { routesConfig } from "@/routes/config"
 import {
   Dialog,
   DialogContent,
@@ -42,7 +43,7 @@ export default function Navbar() {
   return (
     <nav className="flex items-center justify-between px-6 py-4 border-b border-gray-200 fixed top-0 left-0 right-0 z-50 bg-white">
       {/* Logo */}
-      <Link href="/" className="flex-none w-14 text-xl font-bold ml-4">
+      <Link href={routesConfig.home} className="flex-none w-14 text-xl font-bold ml-4">
         LOGO
       </Link>
 
@@ -50,10 +51,10 @@ export default function Navbar() {
       <div className="flex-initial w-1/2">
         <ul className="flex space-x-4 text-sm font-medium">
           <li>
-            <Link href="/">Trang Chủ</Link>
+            <Link href={routesConfig.home}>Trang Chủ</Link>
           </li>
           <li>
-            <Link href="/ecom/product">Sản Phẩm</Link>
+            <Link href={routesConfig.products}>Sản Phẩm</Link>
           </li>
           <li>
             <Link href="/accessories">Accessories</Link>
