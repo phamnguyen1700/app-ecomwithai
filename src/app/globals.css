@@ -6,6 +6,8 @@
   --background: #ffffff;
   --foreground: #171717;
   --primary: #BF6159;
+  --secondary: #ffe2df;
+  --tertiary: #ff9595;
   --text-color: #5F5A56;
 }
 
@@ -31,4 +33,12 @@ body {
   html {
     font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   }
+}
+
+.scrollbar-hide {
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; 
 }

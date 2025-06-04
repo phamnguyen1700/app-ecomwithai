@@ -1,13 +1,13 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 import Icon from "@/components/assests/icons";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useChat } from "ai/react";
+import { ChatInput } from "./chatInput";
 
 export default function ChatBox() {
     const {
@@ -15,11 +15,30 @@ export default function ChatBox() {
         input,
         handleInputChange,
         handleSubmit,
-        isLoading,
+        status,
+        append,
     } = useChat({
         api: "/api/comerce-gpt",
     });
     const [isOpen, setIsOpen] = useState(false);
+    const [hasWelcomed, setHasWelcomed] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
+
+    useEffect(() => {
+        if (isOpen && !hasWelcomed) {
+            append({
+                role: "user",
+                content: ""
+            });
+            setHasWelcomed(true);
+        }
+    }, [isOpen, hasWelcomed, append]);
 
     return (
         <div className="fixed bottom-4 right-4 z-50">
@@ -28,7 +47,7 @@ export default function ChatBox() {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full w-12 h-12 shadow-lg bg-blue-500 hover:bg-blue-600"
+                    className="rounded-full w-10 h-10 shadow-lg bg-[color:var(--tertiary)] hover:bg-[color:var(--primary)]"
                     onClick={() => setIsOpen(!isOpen)}
                 >
                     <Icon name="bot" className="w-6 h-6" color="white" />
@@ -42,14 +61,17 @@ export default function ChatBox() {
                             <div className="flex items-center gap-2">
                                 <Avatar>
                                     <AvatarImage src="/avatar.png" />
-                                    <AvatarFallback>
+                                    <AvatarFallback
+                                        className="bg-[color:var(--tertiary)]"
+                                    >
                                         <Icon
                                             name="bot"
                                             className="w-4 h-4"
+                                            color="white"
                                         />
                                     </AvatarFallback>
                                 </Avatar>
-                                <span className="font-semibold">Nhân viên ảo</span>
+                                <span className="font-semibold">Tư vấn viên</span>
                             </div>
                             <Button
                                 variant="ghost"
@@ -62,31 +84,54 @@ export default function ChatBox() {
                         </div>
 
                         <ScrollArea className="h-64 rounded-md border p-2 space-y-2">
-                            {messages.map((msg, idx) => (
-                                <div
-                                    key={idx}
-                                    className={`p-2 rounded-lg max-w-xs text-sm whitespace-pre-wrap ${msg.role === "user"
-                                        ? "bg-black text-white self-end ml-auto text-xs m-2 w-fit"
-                                        : "bg-gray-200 text-black self-start text-xs w-fit"
-                                        }`}
-                                >
-                                    {msg.content}
-                                </div>
-                            ))}
-                            {isLoading && (
-                                <div className="text-xs text-gray-400 animate-pulse">Đang nhập...</div>
+                            {messages
+                                .filter((msg) => msg.content.trim() !== "")
+                                .map((msg, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`flex items-end gap-2 mb-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                                    >
+                                        {msg.role !== "user" && (
+                                            <Avatar className="w-4 h-4">
+                                                <AvatarImage src="/avatar.png" />
+                                                <AvatarFallback
+                                                    className="bg-[color:var(--tertiary)]"
+                                                >
+                                                    <Icon name="bot" className="w-2 h-2" color="white" />
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        )}
+                                        <div
+                                            className={`p-2 rounded-lg max-w-xs text-[12px] whitespace-pre-wrap ${msg.role === "user"
+                                                    ? "bg-[color:var(--primary)] text-white self-end ml-auto max-w-[60%]"
+                                                    : "bg-[color:var(--secondary)] text-black self-start max-w-[60%]"
+                                                }`}
+                                        >
+                                            {msg.content}
+                                        </div>
+                                    </div>
+                                ))}
+                            {status === 'streaming' && (
+                                <div className="text-[10px] text-gray-400 animate-pulse ml-6">Đang nhập...</div>
                             )}
+                            <div ref={messagesEndRef} />
                         </ScrollArea>
 
-                        <form onSubmit={handleSubmit} className="relative mt-2">
-                            <Input
+                        <form onSubmit={handleSubmit} className="relative">
+                            <ChatInput
+                                className="text-[12px]"
                                 placeholder="Aa"
-                                className="pr-10"
                                 value={input}
                                 onChange={handleInputChange}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        handleSubmit();
+                                    }
+                                }}
                             />
                             <Button
-                                variant="ghost"
+                                variant="link"
                                 size="icon"
                                 className="absolute right-0 top-1/2 -translate-y-1/2 p-2"
                                 tabIndex={-1}
