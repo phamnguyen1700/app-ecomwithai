@@ -1,13 +1,15 @@
+import { createMetadata } from "@/components/core/AppPageMeta";
+import { AppTypes } from "@/enum/home";
+import { ProfilePage } from "@/modules/profile/ProfilePage";
+import { Metadata } from "next";
+export const metadata: Metadata = createMetadata({
+    title: AppTypes.PROFILE,
+    description: AppTypes.DESCRIPTION,
+});
 export default function Home() {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <div className="text-4xl font-bold text-center">
-          Welcome Profile
-        </div>
-        <div className="text-lg text-muted-foreground text-center">
-          Your one-stop shop for everything you need
-        </div>
-      </main>
-    )
-  }
-  
+  return (
+    <>
+      <ProfilePage />
+    </>
+  )
+}
