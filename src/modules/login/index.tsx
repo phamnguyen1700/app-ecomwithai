@@ -1,7 +1,7 @@
 import AppForm from "@/components/core/AppDiaglogForm";
 import React from "react";
 import { loginFields } from "./fields";
-import { useLogin } from "@/tanstack/auth";
+import { useLogin } from "@/tanstack/auth/login";
 import { AuthTypes } from "@/enum/auth";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/assests/icons";

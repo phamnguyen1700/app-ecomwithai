@@ -3,7 +3,7 @@ import { getAllProducts } from "@/zustand/services/product/product";
 
 export const useProducts = () => {
     return useQuery({
-        queryKey: ['products'],
+        queryKey: ['product'],
         queryFn: getAllProducts
     })
 }

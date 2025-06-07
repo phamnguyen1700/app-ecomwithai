@@ -3,7 +3,6 @@ import Icon from "@/components/assests/icons";
 import { IProduct } from "@/types/product";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { formatMoney } from "@/hooks/formatMoney";
 
 interface IProductCardProps {
   product: IProduct;
@@ -51,16 +50,16 @@ export default function ProductCard({ product, onCompare }: IProductCardProps) {
       <CardContent className="p-4">
         <h3 className="text-md font-light line-clamp-1 mb-2">{product.name}</h3>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-semibold">{formatMoney(product.price)}</p>
+          {/* <p className="text-sm font-semibold">{formatMoney(product.price)}</p> */}
           <div className="flex items-center">
             {Array.from({ length: 5 }).map((_, i) => (
               <Icon
                 key={i}
                 name="star"
-                className={`w-4 h-4 ${i < Math.round(product.rating || 0) ? "text-yellow-500" : "text-gray-300"}`}
+                className={`w-4 h-4 ${i < Math.round(product?.rating || 0) ? "text-yellow-500" : "text-gray-300"}`}
               />
             ))}
-            <span className="text-sm font-light ml-1">{product.rating}</span>
+            <span className="text-sm font-light ml-1">{product?.rating}</span>
           </div>
         </div>
       </CardContent>
