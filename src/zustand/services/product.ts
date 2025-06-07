@@ -1,6 +1,10 @@
-import { IProduct } from "@/types/product";
+import { IProduct, IProductDetail } from "@/types/product";
 import { get } from "@/util/Http";
 
 export const getAllProducts = async () => {
-    return await get<IProduct[]>("");
-};
+    const res = await get<{ data: IProduct[] }>("/product");
+    return res.data; // lấy đúng mảng
+  };
+export const getProductDetail = async (id: string) => {
+    return await get<IProductDetail>(`/product/${id}`);
+  };

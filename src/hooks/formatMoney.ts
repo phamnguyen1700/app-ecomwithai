@@ -1,4 +1,5 @@
-export function formatMoney(value: number): string {
-    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-  }
-  
+export const formatMoney = (value: number | undefined | null) =>
+  (value ?? 0).toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
