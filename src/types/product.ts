@@ -42,6 +42,7 @@ export interface IProduct {
     createdAt: string;
     price?: number;
     image?: any;
+    rating?: number;
     updatedAt: string;
     __v: number;
     skus: ISku[];
