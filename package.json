@@ -26,10 +26,12 @@
     "next": "15.3.2",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "react-hook-form": "^7.57.0",
     "react-toastify": "^11.0.5",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.25.32"
+    "zod": "^3.25.32",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@types/node": "20",

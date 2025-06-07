@@ -1,10 +1,10 @@
 import { createMetadata } from "@/components/core/AppPageMeta";
-import { HomeTypes } from "@/enum/home";
+import { AppTypes } from "@/enum/home";
 import { HomePageContent } from "@/modules/home/HomePage";
 import { Metadata } from "next";
 export const metadata: Metadata = createMetadata({
-    title: HomeTypes.HOME,
-    description: HomeTypes.DESCRIPTION,
+    title: AppTypes.HOME,
+    description: AppTypes.DESCRIPTION,
 });
 export default function Home() {
     return (

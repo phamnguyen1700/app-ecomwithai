@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 
 export default function ProductPage() {
-    const { data: products, isLoading } = useProducts();
+    const { data: response, isLoading } = useProducts();
+    const products = Array.isArray(response?.data?.data) ? response.data.data : [];    
     return (
         <>
             {isLoading ? (
