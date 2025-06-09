@@ -8,7 +8,8 @@ import {
     Bot,
     Star,
     StarHalf,
-    ShoppingBasket
+    ShoppingBasket,
+    Plus
   } from "lucide-react";
   
   const icons = {
@@ -20,7 +21,8 @@ import {
     bot: Bot,
     star: Star,
     starHalf: StarHalf,
-    shoppingBasket: ShoppingBasket
+    shoppingBasket: ShoppingBasket,
+    plus: Plus
   };
   
   interface IconProps extends LucideProps {
