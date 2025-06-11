@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CustomTableProps } from "@/typings/table";
+import { CustomTableProps } from "@/types/table";
 
 export default function CustomTable<T>({
   columns,

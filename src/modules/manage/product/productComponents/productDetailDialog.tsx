@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import Icon from "@/components/assests/icons";
 import StatusToggleBadge from "@/components/common/statusToggleBadge";
 import CheckboxBadge from "@/components/common/checkboxBadge";
 import EditDetailList from "@/components/common/editDetailList";
