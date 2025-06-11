@@ -65,10 +65,10 @@ export default function ProductCard({ product, onCompare }: IProductCardProps) {
               <Icon
                 key={i}
                 name="star"
-                className={`w-4 h-4 ${i < Math.round(product.rating || 0) ? "text-yellow-500" : "text-gray-300"}`}
+                className={`w-4 h-4 ${i < Math.round(product?.rating || 0) ? "text-yellow-500" : "text-gray-300"}`}
               />
             ))}
-            <span className="text-sm font-light ml-1">{product.rating}</span>
+            <span className="text-sm font-light ml-1">{product?.rating}</span>
           </div>
         </div>
       </CardContent>

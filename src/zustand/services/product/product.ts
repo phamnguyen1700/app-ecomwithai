@@ -6,5 +6,6 @@ export const getAllProducts = async () => {
     return res.data; // lấy đúng mảng
   };
 export const getProductDetail = async (id: string) => {
-    return await get<IProductDetail>(`/product/${id}`);
+    const res = await get<IProductDetail>(`/product/${id}`);
+    return res.data; // lấy đúng mảng
   };

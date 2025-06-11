@@ -1,8 +1,37 @@
-export interface IProduct {
-    _id?: string;
-    code: string;
-    name: string;
+export interface IDimensions {
+    length: number;
+    width: number;
+    height: number;
+}
+
+export interface ISku {
+    _id: string;
+    productId: string;
+    variantName: string;
     price: number;
+    stock: number;
+    reservedStock: number;
+    batchCode: string;
+    manufacturedAt: string;
+    expiredAt: string;
+    shelfLifeMonths: number;
+    formulationType: string;
+    returnable: boolean;
+    returnCount: number;
+    status: string;
+    discount: number;
+    image: string;
+    weight: number;
+    dimensions: IDimensions;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
+
+export interface IProduct {
+    _id: string;
+    name: string;
+    brand: string;
     description: string;
     quantity: number;
     image: string;
@@ -59,3 +88,14 @@ export interface IProduct {
     size?: string; // Optional, size of the product (e.g. 100ml, 50g)
   }
   
+export interface IProductResponse {
+    data: {
+        data: IProduct[];
+        metadata: {
+            totalItems?: number;
+            totalPages?: number;
+            currentPage?: number;
+            limit?: number;
+        };
+    };
+}
