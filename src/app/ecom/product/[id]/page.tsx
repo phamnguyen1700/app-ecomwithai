@@ -2,10 +2,10 @@
 
 import { useParams } from "next/navigation";
 import { useProductDetail } from "@/tanstack/product";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-
+import { ISku } from "@/types/product"; // nếu chưa import
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
@@ -26,13 +26,19 @@ export default function ProductDetail() {
   const { id } = useParams();
   const { data: product, isLoading, error } = useProductDetail(id as string);
   const [quantity, setQuantity] = useState(1);
+  const [selectedSku, setSelectedSku] = useState<ISku | null>(null);
+
+  useEffect(() => {
+    if (product?.skus?.length) {
+      setSelectedSku(product.skus[0]);
+    }
+  }, [product]);
 
   if (isLoading) return <p className="text-center py-10">Đang tải sản phẩm...</p>;
-  if (error || !product) return <p className="text-center py-10 text-red-500">Không tìm thấy sản phẩm.</p>;
+  if (error || !product || !selectedSku) return <p className="text-center py-10 text-red-500">Không tìm thấy sản phẩm.</p>;
 
-  const sku = product.skus?.[0];
-  const finalPrice = sku ? Math.round(sku.price * (1 - (sku.discount || 0) / 100)) : null;
-  const isAvailable = sku && sku.stock > sku.reservedStock;
+  const finalPrice = Math.round(selectedSku.price * (1 - (selectedSku.discount || 0) / 100));
+  const isAvailable = selectedSku.stock > selectedSku.reservedStock;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
@@ -41,7 +47,7 @@ export default function ProductDetail() {
         <div>
           <div className="relative w-full h-[400px] border rounded-lg overflow-hidden">
             <Image
-              src={sku?.image?.trim() || "/placeholder.jpg"}
+              src={selectedSku?.image?.trim() || "/placeholder.jpg"}
               alt={product.name}
               layout="fill"
               objectFit="cover"
@@ -67,11 +73,11 @@ export default function ProductDetail() {
             <Section title="Add To Glance:">Thông tin đang cập nhật.</Section>
             <Section title="Ingredients:">{product.ingredients?.join(", ") || "Đang cập nhật..."}</Section>
             <Section title="Other Details:">
-              <p>Mã lô: {sku?.batchCode}</p>
-              <p>NSX: {sku?.manufacturedAt?.slice(0, 10)}</p>
-              <p>HSD: {sku?.expiredAt?.slice(0, 10)}</p>
-              <p>{sku?.returnable ? "Sản phẩm hỗ trợ hoàn trả." : "Không hỗ trợ hoàn trả."}</p>
-              <p>{sku?.internalNotes || "Không có ghi chú."}</p>
+              <p>Mã lô: {selectedSku?.batchCode}</p>
+              <p>NSX: {selectedSku?.manufacturedAt?.slice(0, 10)}</p>
+              <p>HSD: {selectedSku?.expiredAt?.slice(0, 10)}</p>
+              <p>{selectedSku?.returnable ? "Sản phẩm hỗ trợ hoàn trả." : "Không hỗ trợ hoàn trả."}</p>
+              <p>{selectedSku?.internalNotes || "Không có ghi chú."}</p>
             </Section>
           </div>
         </div>
@@ -81,13 +87,13 @@ export default function ProductDetail() {
   <h1 className="text-[32px] leading-[44px] font-normal">{product.name}</h1>
 
   <div className="text-[22px] leading-[34px] font-normal text-[#9F9F9F]">
-    {sku?.discount ? (
+    {selectedSku?.discount ? (
       <>
-        <span className="line-through mr-3">₫{sku.price.toLocaleString()}</span>
+        <span className="line-through mr-3">₫{selectedSku.price.toLocaleString()}</span>
         <span className="text-[#c04c4c] font-semibold">₫{finalPrice?.toLocaleString()}</span>
       </>
     ) : (
-      <span className="text-black font-semibold">₫{sku?.price.toLocaleString()}</span>
+      <span className="text-black font-semibold">₫{selectedSku?.price.toLocaleString()}</span>
     )}
   </div>
 
@@ -99,7 +105,7 @@ export default function ProductDetail() {
   {/* Thông tin */}
   <div className="space-y-1 text-[15px]">
     <p><span className="font-semibold">Vendor:</span> {product.brand}</p>
-    <p><span className="font-semibold">SKU:</span> {sku?.batchCode}</p>
+    <p><span className="font-semibold">SKU:</span> {selectedSku?.batchCode}</p>
     <p>
       <span className="font-semibold">Availability:</span>{" "}
       <span className={isAvailable ? "text-green-600" : "text-red-500"}>
@@ -110,8 +116,22 @@ export default function ProductDetail() {
       <span className="font-semibold">Tags:</span>{" "}
       3 Day Glow, All Products, Cream, Face, Nightcream, SkinWhite, Women,<br />WomenFace
     </p>
-    <p><span className="font-semibold">SIZE:</span> {sku?.variantName}</p>
+
   </div>
+      {/* SKU Selection */}
+<div className="flex gap-2 flex-wrap mt-2">
+  {product.skus?.map((sku) => (
+    <button
+      key={sku._id}
+      onClick={() => setSelectedSku(sku)}
+      className={`px-3 py-1 border rounded-md text-sm ${
+        selectedSku?._id === sku._id ? "border-black font-semibold" : "border-gray-300"
+      }`}
+    >
+      {sku.variantName}
+    </button>
+  ))}
+</div>
 
   {/* Divider */}
   <hr className="my-2 border-[#000000] border-[1.2px]" />
