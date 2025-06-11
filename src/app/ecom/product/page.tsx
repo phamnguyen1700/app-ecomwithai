@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export default function ProductPage() {
     const { data: response, isLoading } = useProducts();
-    const products = Array.isArray(response?.data?.data) ? response.data.data : [];    
+    const products = Array.isArray(response?.data) ? response?.data : [];    
     return (
         <>
             {isLoading ? (

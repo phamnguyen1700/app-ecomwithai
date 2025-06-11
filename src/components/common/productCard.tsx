@@ -3,6 +3,7 @@ import Icon from "@/components/assests/icons";
 import { IProduct } from "@/types/product";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { formatMoney } from "@/hooks/formatMoney";
 
 interface IProductCardProps {
   product: IProduct;
@@ -19,9 +20,14 @@ export default function ProductCard({ product, onCompare }: IProductCardProps) {
   //     : "/assets/blank.png";
 
   const handleCardClick = () => {
-    router.push(`/commercial/products/${product._id}`);
+    router.push(`/ecom/product/${product._id}`);
   };
+  const fallbackImage = "/assets/blank.png";
 
+  const imageUrl =
+    product.image?.trim() ||
+    product.skus?.[0]?.image?.trim() ||
+    fallbackImage;
   return (
     <Card
       className="w-full max-w-xs border border-gray-200 rounded-none shadow-md overflow-hidden hover:border-black hover:border-2 cursor-pointer"
@@ -29,7 +35,7 @@ export default function ProductCard({ product, onCompare }: IProductCardProps) {
     >
       <div className="relative w-full h-64">
         <Image
-          src={product.image}
+          src={imageUrl}
           alt={product.name}
           fill
           className="rounded-t-lg border border-gray-200 object-cover"
@@ -50,7 +56,10 @@ export default function ProductCard({ product, onCompare }: IProductCardProps) {
       <CardContent className="p-4">
         <h3 className="text-md font-light line-clamp-1 mb-2">{product.name}</h3>
         <div className="flex justify-between items-center">
-          {/* <p className="text-sm font-semibold">{formatMoney(product.price)}</p> */}
+          <p className="text-sm font-semibold">
+  {formatMoney(product.skus?.[0]?.price ?? 0)}
+</p>
+
           <div className="flex items-center">
             {Array.from({ length: 5 }).map((_, i) => (
               <Icon
