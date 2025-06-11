@@ -1,44 +1,36 @@
-import { HTTP_CONTENT_TYPE } from "@/constants/httpUtil";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-
-const httpRequest = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
-    withCredentials: false,
-    headers: {
-        "Content-Type": HTTP_CONTENT_TYPE,
-    },
-});
+import { AxiosRequestConfig, AxiosResponse } from "axios";
+import http from "./axiosInterceptor";
 
 export const get = async <T = unknown>(
-  url: string,
-  option: AxiosRequestConfig = {}
-): Promise<T> => {
-  const res: AxiosResponse<T> = await httpRequest.get(url, option);
-  return res.data;
+    url: string,
+    option: AxiosRequestConfig = {}
+): Promise<AxiosResponse<T>> => {
+    const res: AxiosResponse<T> = await http.get(url, option);
+    return res;
 };
 
 export const post = async <T = unknown>(
-  url: string,
-  data: unknown = {},
-  option: AxiosRequestConfig = {}
-): Promise<T> => {
-  const res: AxiosResponse<T> = await httpRequest.post(url, data, option);
-  return res.data;
+    url: string,
+    data: unknown = {},
+    option: AxiosRequestConfig = {}
+): Promise<AxiosResponse<T>> => {
+    const res: AxiosResponse<T> = await http.post(url, data, option);
+    return res;
 };
 
 export const put = async <T = unknown>(
-  url: string,
-  data: unknown = {},
-  option: AxiosRequestConfig = {}
-): Promise<T> => {
-  const res: AxiosResponse<T> = await httpRequest.put(url, data, option);
-  return res.data;
+    url: string,
+    data: unknown = {},
+    option: AxiosRequestConfig = {}
+): Promise<AxiosResponse<T>> => {
+    const res: AxiosResponse<T> = await http.put(url, data, option);
+    return res;
 };
 
 export const remove = async <T = unknown>(
-  url: string,
-  option: AxiosRequestConfig = {}
-): Promise<T> => {
-  const res: AxiosResponse<T> = await httpRequest.delete(url, option);
-  return res.data;
+    url: string,
+    option: AxiosRequestConfig = {}
+): Promise<AxiosResponse<T>> => {
+    const res: AxiosResponse<T> = await http.delete(url, option);
+    return res;
 };

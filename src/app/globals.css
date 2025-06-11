@@ -9,6 +9,7 @@
   --secondary: #ffe2df;
   --tertiary: #ff9595;
   --text-color: #5F5A56;
+  --light-color: #7F7F7F;
 }
 
 @theme inline {
@@ -41,4 +42,15 @@ body {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none; 
+}
+
+.super-thin-scrollbar::-webkit-scrollbar {
+  width: 2px;
+}
+.super-thin-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--text-color);
+  border-radius: 4px;
+}
+.super-thin-scrollbar::-webkit-scrollbar-track {
+  background: white; 
 }
