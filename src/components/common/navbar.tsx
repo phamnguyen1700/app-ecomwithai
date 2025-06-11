@@ -6,10 +6,26 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import Icon from "@/components/assests/icons"
 import { routesConfig } from "@/routes/config"
+import { useEffect } from "react"
+import { IProduct } from "@/types/product"
+import { useProducts } from "@/tanstack/product"; // ← thêm dòng này
 
 export default function Navbar() {
+  const { data: products } = useProducts();
   const [cartCount, setCartCount] = useState(1) //eslint-disable-line
-  
+  const [searchText, setSearchText] = useState("");
+  const [searchResults, setSearchResults] = useState<IProduct[]>([]);
+
+useEffect(() => {
+  if (searchText.trim()) {
+    const results = products?.filter((product) =>
+      product.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setSearchResults(results || []);
+  } else {
+    setSearchResults([]);
+  }
+}, [searchText, products]);
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 border-b border-gray-200 fixed top-0 left-0 right-0 z-50 bg-white">
@@ -37,20 +53,43 @@ export default function Navbar() {
       </div>
 
       {/* Search */}
-      <div className="flex-initial w-64">
-        <div className="relative flex items-center">
-          <Input
-            type="search"
-            placeholder="Search for products..."
-            className="pr-10"
-          />
-          <Icon
-            name="search"
-            size={20}
-            className="absolute right-3 text-gray-400"
-          />
-        </div>
-      </div>
+{/* Search */}
+<div className="flex-initial w-64 relative">
+  <div className="relative flex items-center">
+    <Input
+      type="search"
+      placeholder="Search for products..."
+      value={searchText}
+      onChange={(e) => setSearchText(e.target.value)}
+      className="pr-10"
+    />
+    <Icon
+      name="search"
+      size={20}
+      className="absolute right-3 text-gray-400"
+    />
+  </div>
+
+  {/* Dropdown search result */}
+  {searchResults.length > 0 && (
+    <div className="absolute top-full left-0 w-full z-50 bg-white border border-gray-200 rounded-md shadow-md mt-2 max-h-64 overflow-y-auto">
+      {searchResults.map((product) => (
+        <Link
+          key={product._id}
+          href={`ecom/product/${product._id}`}
+          className="block px-4 py-2 hover:bg-gray-100 text-sm cursor-pointer"
+          onClick={() => {
+            setSearchText("");
+            setSearchResults([]);
+          }}
+        >
+          {product.name}
+        </Link>
+      ))}
+    </div>
+  )}
+</div>
+
 
       {/* Cart + User icons */}
       <div className="flex-none w-14 mr-5">
