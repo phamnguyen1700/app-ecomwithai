@@ -1,4 +1,4 @@
-import { IProductResponse } from "@/types/product";
+import { IProductDetail, IProductResponse } from "@/types/product";
 import { get } from "@/util/Http";
 
 export const getAllProducts = async (filters = {}) => {
@@ -8,3 +8,7 @@ export const getAllProducts = async (filters = {}) => {
     });
     return res;
 };
+export const getProductDetail = async (id: string) => {
+    const res = await get<IProductDetail>(`/product/${id}`);
+    return res.data;
+  };

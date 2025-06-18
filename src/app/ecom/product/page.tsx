@@ -15,5 +15,4 @@ const Proudct = () => {
         </>
     );
 };
-
 export default Proudct;

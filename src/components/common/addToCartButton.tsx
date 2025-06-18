@@ -24,7 +24,6 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({ product, varia
       cart.push({
         product: product._id,
         name: product.name,
-        price: product.price,
         image: product.image[0],
         quantity: 1,
       });
