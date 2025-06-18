@@ -4,7 +4,7 @@ import {
     getProductDetail,
 } from "@/zustand/services/product/product";
 
-export const useProducts = (params = "") => {
+export const useProducts = (params: Record<string, any> = {}) => {
     return useQuery({
         queryKey: ["product", params],
         queryFn: () => getAllProducts(params),

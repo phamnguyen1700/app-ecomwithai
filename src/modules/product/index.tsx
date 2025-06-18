@@ -8,7 +8,7 @@ import { AppTypes } from "@/enum/home";
 import { useState } from "react";
 
 export default function ProductPage() {
-    const [filters, setFilters] = useState("");
+    const [filters, setFilters] = useState({});
     const { data: response, isLoading } = useProducts(filters);
     const products = Array.isArray(response?.data?.data)
         ? response.data.data
