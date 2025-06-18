@@ -58,3 +58,9 @@ export interface IProductResponse {
         };
     };
 }
+export interface ProductCardTypes {
+    items: any[];
+    fields: any;
+    loading: boolean;
+    col: number;
+}

@@ -16,4 +16,6 @@ export enum AppTypes {
     DISCOVER = "DISCOVER A SKINVIA FLAGSHIP",
     DISCOVER_DESC = "Find your ideal combination of in-office treatments & skincare regimens.",
     LOREM_IPSUM = "Lorem Ipsum Dolor Sit Amet",
+    NO_DATA = "Không có dữ liệu",
+    FINDING = "Tìm kiếm"
 }

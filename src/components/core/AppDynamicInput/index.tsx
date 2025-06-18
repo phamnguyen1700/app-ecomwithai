@@ -12,7 +12,7 @@ import React from "react";
 export interface DynamicInputProps {
     fieldType: FormInputType;
     value?: any;
-    onChange?: (value: any) => void;
+    onChange?: (name: any, value: any) => void;
     placeholder?: string;
     options?: { label: string; value: string }[];
     [x: string]: any;
@@ -24,6 +24,7 @@ const DynamicInput = ({
     onChange = () => {},
     placeholder,
     options = [],
+    name,
     ...props
 }: DynamicInputProps) => {
     switch (fieldType) {
@@ -34,7 +35,7 @@ const DynamicInput = ({
                     {...props}
                     value={value}
                     placeholder={placeholder}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => onChange(name, e.target.value)}
                 />
             );
         case FormInputType.NUMBER:
@@ -44,7 +45,7 @@ const DynamicInput = ({
                     {...props}
                     value={value}
                     placeholder={placeholder}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => onChange(name, e.target.value)}
                 />
             );
         case FormInputType.DATE:
@@ -53,13 +54,16 @@ const DynamicInput = ({
                     type="date"
                     {...props}
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => onChange(name, e.target.value)}
                     placeholder={placeholder}
                 />
             );
         case FormInputType.SELECT:
             return (
-                <Select onValueChange={props.onChange} value={value}>
+                <Select
+                    onValueChange={(val) => onChange(name, val)}
+                    value={value}
+                >
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder={placeholder} />
                     </SelectTrigger>
@@ -77,7 +81,7 @@ const DynamicInput = ({
             return (
                 <Input
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => onChange(name, e.target.value)}
                     placeholder={placeholder}
                 />
             );
