@@ -3,6 +3,9 @@ export const routesConfig = {
     login: "/login",
     register: "/register",
     products: "/ecom/product",
+    profile: "/ecom/profile",
+    settings: "/ecom/settings",
+    logout: "/ecom/logout",
 };
 export const images = {
     logo: '/assets/logo.png',

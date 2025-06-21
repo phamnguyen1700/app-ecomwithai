@@ -33,7 +33,7 @@ const App = ({
         onSubmit(data);
     };
     return (
-        <Dialog>
+        <Dialog modal={false}>
             <DialogTrigger asChild>
                 <span>
                     {trigger ?? (

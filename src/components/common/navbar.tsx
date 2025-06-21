@@ -17,7 +17,14 @@ import { formatMoney } from "@/hooks/formatMoney";
 import LoginPage from "@/modules/login";
 import { useAuthStore } from "@/zustand/store/userAuth";
 import LogoutPage from "@/modules/logout";
-
+import AppDropDown from "../core/AppDropDown";
+const user_menu = [
+    { name: "Profile", route: routesConfig.profile },
+    { name: "Cài đặt", route: routesConfig.settings },
+    {
+        component: <LogoutPage />,
+    },
+];
 export default function Navbar() {
     const [cartCount, setCartCount] = useState(1); //eslint-disable-line
     const [cartItems, setCartItems] = useState<any[]>([]); //eslint-disable-line
@@ -156,11 +163,18 @@ export default function Navbar() {
                     {/* Login Button */}
                     {!user && <LoginPage />}
                     {user && (
-                        <div className="flex items-center space-x-2">
+                        <div className="flx items-center space-x-2">
                             <span className="text-xs">
                                 Xin chào, {user.email}
                             </span>
-                            <LogoutPage />
+                            <AppDropDown
+                                title={
+                                    <Button variant="ghost" className="p-2">
+                                        <Icon name="user" size={20} />
+                                    </Button>
+                                }
+                                items={user_menu}
+                            />
                         </div>
                     )}
                 </div>
