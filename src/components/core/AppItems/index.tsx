@@ -2,6 +2,7 @@ import React from "react";
 import { AppTypes } from "@/enum/home";
 import Image from "next/image";
 import { ProductCardTypes } from "./../../../types/product";
+import { useRouter } from "next/navigation";
 
 const AppItems = ({
     items = [],
@@ -9,6 +10,7 @@ const AppItems = ({
     loading = false,
     col = 3,
 }: ProductCardTypes) => {
+    const router = useRouter();
     if (loading) {
         return (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -30,6 +32,7 @@ const AppItems = ({
                         <div
                             key={index}
                             className="border rounded-md shadow-sm p-4 space-y-2"
+                            onClick={() => router.push(`/ecom/product/${item._id}`)}
                         >
                             <Image
                                 width={200}

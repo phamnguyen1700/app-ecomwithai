@@ -7,11 +7,12 @@ import { Fields } from "./fields";
 import { AppTypes } from "@/enum/home";
 import { useState } from "react";
 
-export default function ProductPage() {
+export default function Product() {
     const [filters, setFilters] = useState({});
     const { data: response, isLoading } = useProducts(filters);
-    const products = Array.isArray(response?.data?.data)
-        ? response.data.data
+    console.log(response)
+    const products = Array.isArray(response?.data)
+        ? response.data
         : [];
     const handleFilterProduct = (value: any) => {
         setFilters(value)

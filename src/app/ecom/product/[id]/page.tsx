@@ -25,6 +25,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function ProductDetail() {
   const { id } = useParams();
   const { data: product, isLoading, error } = useProductDetail(id as string);
+  console.log(product)
   const [quantity, setQuantity] = useState(1);
   const [selectedSku, setSelectedSku] = useState<ISku | null>(null);
 
