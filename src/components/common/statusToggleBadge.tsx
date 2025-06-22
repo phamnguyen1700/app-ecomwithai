@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 
 interface StatusToggleBadgeProps {
-  initialStatus: boolean;
+  initialStatus?: boolean;
   onChange?: (newStatus: boolean) => void;
 }
 

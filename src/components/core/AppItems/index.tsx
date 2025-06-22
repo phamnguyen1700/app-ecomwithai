@@ -9,6 +9,7 @@ const AppItems = ({
     fields = {},
     loading = false,
     col = 3,
+    path,
 }: ProductCardTypes) => {
     const router = useRouter();
     if (loading) {
@@ -32,7 +33,11 @@ const AppItems = ({
                         <div
                             key={index}
                             className="border rounded-md shadow-sm p-4 space-y-2"
-                            onClick={() => router.push(`/ecom/product/${item._id}`)}
+                            onClick={() => {
+                                if (path) {
+                                    router.push(`${path}/${item._id}`);
+                                }
+                            }}
                         >
                             <Image
                                 width={200}

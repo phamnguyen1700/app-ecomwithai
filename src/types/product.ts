@@ -29,22 +29,22 @@ export interface ISku {
 }
 
 export interface IProduct {
-    _id: string;
-    name: string;
-    code: string;
-    rating: number;
-    isActive: boolean;
-    isDeleted: boolean;
-    createdAt: string;
-    updatedAt: string;
-    suitableForSkinTypes: string[];
-    skinConcerns: string[];
-    ingredients: string[];
-    brand: string;
-    description: string;
-    quantity: number;
-    image: string;
-    skus: ISku[];
+    _id?: string;
+    name?: string;
+    code?: string;
+    rating?: number;
+    isActive?: boolean;
+    isDeleted?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    suitableForSkinTypes?: string[];
+    skinConcerns?: string[];
+    ingredients?: string[];
+    brand?: string;
+    description?: string;
+    quantity?: number;
+    image?: any;
+    skus?: ISku[] | any;
 }
 export interface ISku {
     _id: string;
@@ -111,5 +111,5 @@ export interface ProductCardTypes {
     fields?: any;
     loading?: boolean;
     col?: number;
-    handleClick?: any;
+    path?: string;
 }

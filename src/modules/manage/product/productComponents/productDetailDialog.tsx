@@ -132,7 +132,7 @@ export default function ProductDetailDialog({
                     <div className="pl-10 space-y-2">
                         <div className="font-semibold">Danh sách SKU</div>
                         <div className="max-h-[420px] overflow-y-auto space-y-2 super-thin-scrollbar">
-                            {product.skus?.map((sku) => (
+                            {product.skus?.map((sku: any) => (
                                 <div key={sku._id} className="p-2 border rounded-none space-y-2 bg-white">
                                     <div>
                                         <Label>Phiên bản</Label>
