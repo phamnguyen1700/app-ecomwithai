@@ -6,6 +6,7 @@ import AppFilterForm from "@/components/core/AppFilter";
 import { Fields } from "./fields";
 import { AppTypes } from "@/enum/home";
 import { useState } from "react";
+import { routesConfig } from "@/routes/config";
 
 export default function Product() {
     const [filters, setFilters] = useState({});
@@ -34,6 +35,7 @@ export default function Product() {
                     desc: "description",
                 }}
                 col={4}
+                path={routesConfig.products}
             />
         </div>
     );

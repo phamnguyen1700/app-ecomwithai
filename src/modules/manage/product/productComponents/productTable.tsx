@@ -53,7 +53,7 @@ export default function ProductTable() {
             colName: "Tồn kho",
             render: (product) => (
                 <div className="flex justify-center text-xs text-gray-500">
-                    {product.skus.reduce((acc, sku) => acc + sku.stock, 0)}
+                    {product?.skus.reduce((acc: any, sku: any) => acc + sku.stock, 0)}
                 </div>
             ),
         },

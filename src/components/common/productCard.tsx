@@ -36,7 +36,7 @@ export default function ProductCard({ product, onCompare }: IProductCardProps) {
       <div className="relative w-full h-64">
         <Image
           src={imageUrl}
-          alt={product.name}
+          alt={product.name || ""}
           fill
           className="rounded-t-lg border border-gray-200 object-cover"
           sizes="100%"
