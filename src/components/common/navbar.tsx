@@ -1,20 +1,14 @@
 "use client";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/assests/icons";
 import { routesConfig } from "@/routes/config";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import LoginPage from "@/modules/login";
 import { useAuthStore } from "@/zustand/store/userAuth";
 import LogoutPage from "@/modules/logout";
 import AppDropDown from "../core/AppDropDown";
-import { useCartStore } from "@/zustand/store/cart/cartStore";
-import CartProductItem from "./cartProductItem";
+import Cart from "./Cart";
+
 const user_menu = [
     { name: "Profile", route: routesConfig.profile },
     { name: "Cài đặt", route: routesConfig.settings },
@@ -22,11 +16,8 @@ const user_menu = [
         component: <LogoutPage />,
     },
 ];
+
 export default function Navbar() {
-    // const [cartCount, setCartCount] = useState(1);
-    // const [cartItems, setCartItems] = useState<any[]>([]);
-    const cartItems = useCartStore((state) => state.cartItems);
-    const cartCount = cartItems.reduce((acc, cur) => acc + cur.quantity, 0);
     const user = useAuthStore((state) => state.user);
 
     return (
@@ -40,7 +31,7 @@ export default function Navbar() {
             </Link>
 
             {/* Menu */}
-            <div className="flex-initial w-1/2">
+            <div className="flex-initial w-1/3">
                 <ul className="flex space-x-4 text-sm font-medium">
                     <li>
                         <Link href={routesConfig.home}>Trang Chủ</Link>
@@ -76,42 +67,7 @@ export default function Navbar() {
             {/* Cart + User icons */}
             <div className="flex-none mr-5">
                 <div className="flex items-center space-x-4">
-                    {/* Cart Button */}
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <div className="relative cursor-pointer">
-                                <Icon name="shoppingBag" size={24} />
-                                {cartCount > 0 && (
-                                    <Badge
-                                        variant="destructive"
-                                        className="absolute -top-1 -right-1 rounded-full"
-                                    >
-                                        {cartCount}
-                                    </Badge>
-                                )}
-                            </div>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80">
-                            <div className="grid gap-2">
-                                {cartItems.length === 0 ? (
-                                    <div className="text-center text-xs text-gray-400 py-6">
-                                        Bạn chưa mua sản phẩm nào
-                                    </div>
-                                ) : (
-                                    cartItems.map((item) => (
-                                        <CartProductItem
-                                            key={item._id}
-                                            image={item.image}
-                                            name={item.name}
-                                            quantity={item.quantity}
-                                            price={item.price}
-                                        />
-                                    ))
-                                )}
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-
+                    <Cart />
                     {/* Login Button */}
                     {!user && <LoginPage />}
                     {user && (
