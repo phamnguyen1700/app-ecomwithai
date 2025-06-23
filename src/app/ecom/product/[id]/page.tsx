@@ -6,6 +6,12 @@ import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { ISku } from "@/types/product";
+import AppSection from "@/components/core/AppSection";
+import AppProduct from "@/components/core/AppProduct";
+import AppDivider from "@/components/core/AppDivider";
+import { HeartIcon } from "@/components/core/AppIcons";
+import { useAddToCartMutation } from "@/tanstack/cart";
+import { useCartStore } from "@/zustand/store/cart/cartStore";
 import { AddToCartButton } from "@/components/common/addToCartButton";
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -24,22 +30,59 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function ProductDetail() {
-  const { id } = useParams();
-  const { data: product, isLoading, error } = useProductDetail(id as string);
-  const [quantity, setQuantity] = useState(1);
-  const [selectedSku, setSelectedSku] = useState<ISku | null>(null);
+    const { id } = useParams();
+    const { data: product, isLoading, error } = useProductDetail(id as string);
+    const [quantity, setQuantity] = useState(1);
+    const [selectedSku, setSelectedSku] = useState<ISku | null>(null);
+    const { mutate: addToCartAPI } = useAddToCartMutation();
+    useEffect(() => {
+        if (product?.skus?.length) {
+            setSelectedSku(product.skus[0]);
+        }
+    }, [product]);
 
-  useEffect(() => {
-    if (product?.skus?.length) {
-      setSelectedSku(product.skus[0]);
-    }
-  }, [product]);
+    if (isLoading)
+        return <p className="text-center py-10">Đang tải sản phẩm...</p>;
+    if (error || !product || !selectedSku)
+        return (
+            <p className="text-center py-10 text-red-500">
+                Không tìm thấy sản phẩm.
+            </p>
+        );
+    const handleAddToCart = () => {
+        if (!product || !selectedSku) return;
+        const now = new Date().toISOString();
 
-  if (isLoading) return <p className="text-center py-10">Đang tải sản phẩm...</p>;
-  if (error || !product || !selectedSku) return <p className="text-center py-10 text-red-500">Không tìm thấy sản phẩm.</p>;
+        const body = {
+            productId: product._id,
+            skuId: selectedSku._id,
+            skuName: selectedSku.variantName,
+            image: selectedSku.image,
+            quantity,
+            selected: true,
+            addedAt: now,
+            priceSnapshot: selectedSku.price,
+            discountSnapshot: selectedSku.discount || 0,
+            stockSnapshot: selectedSku.stock - selectedSku.reservedStock,
+        };
+        addToCartAPI(body, {
+            onSuccess: () => {
+                console.log("Sucess");
+            },
+            onError: (err) => {
+                console.error(err);
+            },
+        });
 
-  const finalPrice = Math.round(selectedSku.price * (1 - (selectedSku.discount || 0) / 100));
-  const isAvailable = selectedSku.stock > selectedSku.reservedStock;
+        useCartStore.getState().addToCart({
+            _id: selectedSku._id,
+            name: product.name,
+            image: selectedSku.image,
+            price: Math.round(
+                selectedSku.price * (1 - (selectedSku.discount || 0) / 100)
+            ),
+            quantity,
+        });
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
@@ -67,26 +110,45 @@ export default function ProductDetail() {
             ))}
           </div>
 
-          {/* Expandable Sections */}
-          <div className="mt-6 divide-y divide-gray-200">
-            <Section title="Product Overview:">{product.description}</Section>
-            <Section title="How To Use:">Thông tin đang cập nhật.</Section>
-            <Section title="Add To Glance:">Thông tin đang cập nhật.</Section>
-            <Section title="Ingredients:">{product.ingredients?.join(", ") || "Đang cập nhật..."}</Section>
-            <Section title="Other Details:">
-              <p>Mã lô: {selectedSku?.batchCode}</p>
-              <p>NSX: {selectedSku?.manufacturedAt?.slice(0, 10)}</p>
-              <p>HSD: {selectedSku?.expiredAt?.slice(0, 10)}</p>
-              <p>{selectedSku?.returnable ? "Sản phẩm hỗ trợ hoàn trả." : "Không hỗ trợ hoàn trả."}</p>
-              <p>{selectedSku?.internalNotes || "Không có ghi chú."}</p>
-            </Section>
-          </div>
-        </div>
+                    {/* Expandable Sections */}
+                    <div className="mt-6 divide-y divide-gray-200">
+                        <AppSection title="Product Overview:">
+                            {product.description}
+                        </AppSection>
+                        <AppSection title="How To Use:">
+                            Thông tin đang cập nhật.
+                        </AppSection>
+                        <AppSection title="Add To Glance:">
+                            Thông tin đang cập nhật.
+                        </AppSection>
+                        <AppSection title="Ingredients:">
+                            {product.ingredients?.join(", ") ||
+                                "Đang cập nhật..."}
+                        </AppSection>
+                        <AppSection title="Other Details:">
+                            <p>Mã lô: {selectedSku?.batchCode}</p>
+                            <p>
+                                NSX: {selectedSku?.manufacturedAt?.slice(0, 10)}
+                            </p>
+                            <p>HSD: {selectedSku?.expiredAt?.slice(0, 10)}</p>
+                            <p>
+                                {selectedSku?.returnable
+                                    ? "Sản phẩm hỗ trợ hoàn trả."
+                                    : "Không hỗ trợ hoàn trả."}
+                            </p>
+                            <p>
+                                {selectedSku?.internalNotes ||
+                                    "Không có ghi chú."}
+                            </p>
+                        </AppSection>
+                    </div>
+                </div>
 
         <div className="space-y-6 max-w-xl font-prompt text-[#000000] leading-[28px] text-[15px] capitalize">
-          {/* Tên sản phẩm + giá */}
-          <h1 className="text-[32px] leading-[44px] font-normal">{product.name}</h1>
+  {/* Tên sản phẩm + giá */}
+  <h1 className="text-[32px] leading-[44px] font-normal">{product.name}</h1>
 
+                    <AppDivider />
           <div className="text-[22px] leading-[34px] font-normal text-[#9F9F9F]">
             {selectedSku?.discount ? (
               <>
