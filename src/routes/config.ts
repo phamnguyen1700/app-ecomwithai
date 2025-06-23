@@ -3,6 +3,10 @@ export const routesConfig = {
     login: "/login",
     register: "/register",
     products: "/ecom/product",
+    cart: "/ecom/cart",
+    profile: "/ecom/profile",
+    settings: "/ecom/settings",
+    logout: "/ecom/logout",
 };
 export const images = {
     logo: '/assets/logo.png',
