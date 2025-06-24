@@ -9,10 +9,6 @@ export const metadata: Metadata = createMetadata({
     description: AppTypes.DESCRIPTION,
 });
 const Proudct = () => {
-    return (
-        <>
-            <ProductPage />
-        </>
-    );
+    return <ProductPage />
 };
 export default Proudct;

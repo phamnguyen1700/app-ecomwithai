@@ -1,6 +1,6 @@
 export const routesConfig = {
     home: "/ecom/home",
-    login: "/login",
+    login: "/ecom/home",
     register: "/register",
     products: "/ecom/product",
     cart: "/ecom/cart",

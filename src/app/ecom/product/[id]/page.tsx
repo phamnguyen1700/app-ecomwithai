@@ -3,86 +3,39 @@
 import { useParams } from "next/navigation";
 import { useProductDetail } from "@/tanstack/product";
 import { useState, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { ISku } from "@/types/product";
-import AppSection from "@/components/core/AppSection";
-import AppProduct from "@/components/core/AppProduct";
-import AppDivider from "@/components/core/AppDivider";
-import { HeartIcon } from "@/components/core/AppIcons";
-import { useAddToCartMutation } from "@/tanstack/cart";
-import { useCartStore } from "@/zustand/store/cart/cartStore";
 import { AddToCartButton } from "@/components/common/addToCartButton";
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-gray-300">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex justify-between items-center py-4 text-sm font-medium text-left"
-      >
-        <span>{title}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : "rotate-0"}`} />
-      </button>
-      {open && <div className="pb-4 text-sm text-gray-500">{children}</div>}
-    </div>
-  );
-}
+import AppSection from "@/components/core/AppSection";
+import { HeartIcon } from "@/components/core/AppIcons";
+
 
 export default function ProductDetail() {
-    const { id } = useParams();
-    const { data: product, isLoading, error } = useProductDetail(id as string);
-    const [quantity, setQuantity] = useState(1);
-    const [selectedSku, setSelectedSku] = useState<ISku | null>(null);
-    const { mutate: addToCartAPI } = useAddToCartMutation();
-    useEffect(() => {
-        if (product?.skus?.length) {
-            setSelectedSku(product.skus[0]);
-        }
-    }, [product]);
+  const { id } = useParams();
+  const { data: product, isLoading, error } = useProductDetail(id as string);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedSku, setSelectedSku] = useState<ISku | null>(null);
 
-    if (isLoading)
-        return <p className="text-center py-10">Đang tải sản phẩm...</p>;
-    if (error || !product || !selectedSku)
-        return (
-            <p className="text-center py-10 text-red-500">
-                Không tìm thấy sản phẩm.
-            </p>
-        );
-    const handleAddToCart = () => {
-        if (!product || !selectedSku) return;
-        const now = new Date().toISOString();
+  useEffect(() => {
+    if (product?.skus?.length) {
+      setSelectedSku(product.skus[0]);
+    }
+  }, [product]);
 
-        const body = {
-            productId: product._id,
-            skuId: selectedSku._id,
-            skuName: selectedSku.variantName,
-            image: selectedSku.image,
-            quantity,
-            selected: true,
-            addedAt: now,
-            priceSnapshot: selectedSku.price,
-            discountSnapshot: selectedSku.discount || 0,
-            stockSnapshot: selectedSku.stock - selectedSku.reservedStock,
-        };
-        addToCartAPI(body, {
-            onSuccess: () => {
-                console.log("Sucess");
-            },
-            onError: (err) => {
-                console.error(err);
-            },
-        });
+  if (isLoading)
+    return <p className="text-center py-10">Đang tải sản phẩm...</p>;
+  if (error || !product || !selectedSku)
+    return (
+      <p className="text-center py-10 text-red-500">
+        Không tìm thấy sản phẩm.
+      </p>
+    );
 
-        useCartStore.getState().addToCart({
-            _id: selectedSku._id,
-            name: product.name,
-            image: selectedSku.image,
-            price: Math.round(
-                selectedSku.price * (1 - (selectedSku.discount || 0) / 100)
-            ),
-            quantity,
-        });
+  // Calculate final price and availability
+  const finalPrice = selectedSku.discount
+    ? Math.round(selectedSku.price * (1 - selectedSku.discount / 100))
+    : selectedSku.price;
+  const isAvailable = (selectedSku.stock - selectedSku.reservedStock) > 0;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
@@ -109,46 +62,25 @@ export default function ProductDetail() {
               </div>
             ))}
           </div>
-
-                    {/* Expandable Sections */}
-                    <div className="mt-6 divide-y divide-gray-200">
-                        <AppSection title="Product Overview:">
-                            {product.description}
-                        </AppSection>
-                        <AppSection title="How To Use:">
-                            Thông tin đang cập nhật.
-                        </AppSection>
-                        <AppSection title="Add To Glance:">
-                            Thông tin đang cập nhật.
-                        </AppSection>
-                        <AppSection title="Ingredients:">
-                            {product.ingredients?.join(", ") ||
-                                "Đang cập nhật..."}
-                        </AppSection>
-                        <AppSection title="Other Details:">
-                            <p>Mã lô: {selectedSku?.batchCode}</p>
-                            <p>
-                                NSX: {selectedSku?.manufacturedAt?.slice(0, 10)}
-                            </p>
-                            <p>HSD: {selectedSku?.expiredAt?.slice(0, 10)}</p>
-                            <p>
-                                {selectedSku?.returnable
-                                    ? "Sản phẩm hỗ trợ hoàn trả."
-                                    : "Không hỗ trợ hoàn trả."}
-                            </p>
-                            <p>
-                                {selectedSku?.internalNotes ||
-                                    "Không có ghi chú."}
-                            </p>
-                        </AppSection>
-                    </div>
-                </div>
-
+          {/* Expandable Sections */}
+          <div className="mt-6 divide-y divide-gray-200">
+            <AppSection title="Product Overview:">{product.description}</AppSection>
+            <AppSection title="How To Use:">Thông tin đang cập nhật.</AppSection>
+            <AppSection title="Add To Glance:">Thông tin đang cập nhật.</AppSection>
+            <AppSection title="Ingredients:">{product.ingredients?.join(", ") || "Đang cập nhật..."}</AppSection>
+            <AppSection title="Other Details:">
+              <p>Mã lô: {selectedSku?.batchCode}</p>
+              <p>NSX: {selectedSku?.manufacturedAt?.slice(0, 10)}</p>
+              <p>HSD: {selectedSku?.expiredAt?.slice(0, 10)}</p>
+              <p>{selectedSku?.returnable ? "Sản phẩm hỗ trợ hoàn trả." : "Không hỗ trợ hoàn trả."}</p>
+              <p>{selectedSku?.internalNotes || "Không có ghi chú."}</p>
+            </AppSection>
+          </div>
+        </div>
+        {/* Product Info Section */}
         <div className="space-y-6 max-w-xl font-prompt text-[#000000] leading-[28px] text-[15px] capitalize">
-  {/* Tên sản phẩm + giá */}
-  <h1 className="text-[32px] leading-[44px] font-normal">{product.name}</h1>
-
-                    <AppDivider />
+          {/* Tên sản phẩm + giá */}
+          <h1 className="text-[32px] leading-[44px] font-normal">{product.name}</h1>
           <div className="text-[22px] leading-[34px] font-normal text-[#9F9F9F]">
             {selectedSku?.discount ? (
               <>
@@ -159,12 +91,10 @@ export default function ProductDetail() {
               <span className="text-black font-semibold">₫{selectedSku?.price.toLocaleString()}</span>
             )}
           </div>
-
           {/* Mô tả ngắn */}
           <p className="text-[16px] text-[#2d2d2d]">
             Lorem Ipsum Dolor Sit Amet, Consectetur<br />Adipisicing Elit.
           </p>
-
           {/* Thông tin */}
           <div className="space-y-1 text-[15px]">
             <p><span className="font-semibold">Vendor:</span> {product.brand}</p>
@@ -179,7 +109,6 @@ export default function ProductDetail() {
               <span className="font-semibold">Tags:</span>{" "}
               3 Day Glow, All Products, Cream, Face, Nightcream, SkinWhite, Women,<br />WomenFace
             </p>
-
           </div>
           {/* SKU Selection */}
           <div className="flex gap-2 flex-wrap mt-2">
@@ -187,17 +116,14 @@ export default function ProductDetail() {
               <button
                 key={sku._id}
                 onClick={() => setSelectedSku(sku)}
-                className={`px-3 py-1 border rounded-md text-sm ${selectedSku?._id === sku._id ? "border-black font-semibold" : "border-gray-300"
-                  }`}
+                className={`px-3 py-1 border rounded-md text-sm ${selectedSku?._id === sku._id ? "border-black font-semibold" : "border-gray-300"}`}
               >
                 {sku.variantName}
               </button>
             ))}
           </div>
-
           {/* Divider */}
           <hr className="my-2 border-[#000000] border-[1.2px]" />
-
           {/* Quantity & Add to cart */}
           <div className="flex items-center gap-4">
             <div className="flex border-[1.5px] border-black h-[44px]">
@@ -215,24 +141,11 @@ export default function ProductDetail() {
                 +
               </button>
             </div>
-
             <AddToCartButton selectedSku={selectedSku} quantity={quantity} />
-
             <div className="border-[1.5px] border-[#CC857F] h-[44px] w-[44px] flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-[22px] w-[22px] fill-[#CC857F]"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 
-        6.5 3.5 5 5.5 5c1.54 0 3.04.99 3.57 
-        2.36h1.87C13.46 5.99 14.96 5 16.5 
-        5 18.5 5 20 6.5 20 8.5c0 3.78-3.4 
-        6.86-8.55 11.54L12 21.35z" />
-              </svg>
+              <HeartIcon />
             </div>
           </div>
-
           {/* Delivery & Returns */}
           <div className="pt-4 border-t border-[#000000] space-y-2">
             <p className="font-semibold text-[15px]">Delivery & Returns</p>
@@ -245,9 +158,6 @@ export default function ProductDetail() {
             </a>
           </div>
         </div>
-
-
-
       </div>
     </div>
   );

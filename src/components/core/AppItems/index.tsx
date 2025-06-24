@@ -42,7 +42,7 @@ const AppItems = ({
                             <Image
                                 width={200}
                                 height={200}
-                                src={item[fields?.img]}
+                                src={item[fields?.img] || '/assets/blank.png'}
                                 alt={"alt"}
                                 className="w-full h-32 object-cover rounded"
                             />

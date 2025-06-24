@@ -34,3 +34,12 @@ export const remove = async <T = unknown>(
     const res: AxiosResponse<T> = await http.delete(url, option);
     return res;
 };
+
+export const patch = async <T = unknown>(
+    url: string,
+    data: unknown = {},
+    option: AxiosRequestConfig = {}
+): Promise<AxiosResponse<T>> => {
+    const res: AxiosResponse<T> = await http.patch(url, data, option);
+    return res;
+};
