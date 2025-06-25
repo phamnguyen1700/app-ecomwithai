@@ -2,7 +2,6 @@ import { get, post, patch, remove } from "@/util/Http";
 
 export const getCartAPI = () => {
     const data = get("/cart");
-    console.log(data);
     return data;
 };
 
@@ -34,4 +33,12 @@ export const removeCartItemAPI = (data: {
     productId?: string;
 }) => {
     return remove("/cart/item", { data });
+};
+
+export const selectCartAPI = (data: {
+    skuId?: string;
+    productId?: string;
+    selected?: boolean;
+}) => {
+    return patch("/cart/item/select", data);
 };

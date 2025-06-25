@@ -1,4 +1,4 @@
-import { addToCartAPI, getCartAPI, removeCartItemAPI, updateQuantityAPI } from "@/zustand/services/cart";
+import { addToCartAPI, getCartAPI, removeCartItemAPI, selectCartAPI, updateQuantityAPI } from "@/zustand/services/cart";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 export const useAddToCartMutation = () => {
@@ -33,6 +33,16 @@ export const useRemoveCartItemMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: removeCartItemAPI,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
+};
+
+export const useSelectCartItemMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: selectCartAPI,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
