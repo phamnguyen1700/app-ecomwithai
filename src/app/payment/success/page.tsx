@@ -14,7 +14,7 @@ export default function PaymentSuccessPage() {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [router]);
 
   return (
     <div className="w-full h-[60vh] flex items-center justify-center text-lg font-semibold">

@@ -20,3 +20,13 @@ export interface AuthState {
     setUser: (user: User) => void;
     clearAuth: () => void;
 }
+
+export interface UserResponse {
+    data: User[];
+    metadata: {
+        totalItems?: number;
+        totalPages?: number;
+        currentPage?: number;
+        limit?: number;
+    };
+}

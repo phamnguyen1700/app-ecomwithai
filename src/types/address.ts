@@ -12,4 +12,13 @@ export interface IAddress {
     updatedAt: string;
     __v: number;
   }
-  
+
+  export interface AddressResponse {
+    data: IAddress[];
+    metadata: {
+        totalItems?: number;
+        totalPages?: number;
+        currentPage?: number;
+        limit?: number;
+    };
+  }
