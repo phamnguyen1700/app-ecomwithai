@@ -1,5 +1,6 @@
 import { post } from "@/util/Http";
+import { ICheckoutResponse } from "@/types/checkout";
 
 export const checkout = (addressId: string) => {
-    return post("/checkout", { addressId });
+    return post<ICheckoutResponse>("/checkout", { addressId });
 }
