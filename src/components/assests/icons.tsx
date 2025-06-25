@@ -10,7 +10,12 @@ import {
     StarHalf,
     ShoppingBasket,
     Plus,
-    Trash2
+    Trash2,
+    ListOrdered,
+    Menu,
+    Home,
+    Package,
+    BarChart
   } from "lucide-react";
   
   const icons = {
@@ -24,7 +29,12 @@ import {
     starHalf: StarHalf,
     shoppingBasket: ShoppingBasket,
     plus: Plus,
-    trash: Trash2
+    trash: Trash2,
+    listOrdered: ListOrdered,
+    menu: Menu,
+    home: Home,
+    package: Package,
+    barChart: BarChart
   };
   
   interface IconProps extends LucideProps {

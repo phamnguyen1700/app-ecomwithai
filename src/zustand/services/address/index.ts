@@ -1,7 +1,9 @@
 import { get, post } from "@/util/Http";
+import { AddressResponse } from "@/types/address";
 
-export const getAddressAPI = () => {
-    return get("/address");
+export const getAddressAPI = async () => {
+    const res = await get<AddressResponse>("/address");
+    return res.data;
 };
 
 export const addAddressAPI = (data: {

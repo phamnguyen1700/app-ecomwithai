@@ -14,7 +14,7 @@ export default function ProductTable() {
     );
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     useEffect(() => {
-        if (products?.data?.data) {
+        if (products?.data) {
             setProductsData(products.data);
         } else {
             setProductsData([]);

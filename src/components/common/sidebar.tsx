@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, Package, BarChart, Menu } from "lucide-react";
+import Icon from "@/components/assests/icons";
 import { useState } from "react";
 import {
   Drawer,
@@ -16,18 +16,23 @@ const navItems = [
   {
     label: "Tổng quan",
     href: "/manage/dashboard",
-    icon: <Home className="w-4 h-4" />,
+    icon: <Icon name="home" size={24} />,
   },
   {
     label: "Sản phẩm",
     href: "/manage/product",
-    icon: <Package className="w-4 h-4" />,
+    icon: <Icon name="package" size={24} />,
   },
   {
     label: "Báo cáo",
     href: "/manage/report",
-    icon: <BarChart className="w-4 h-4" />,
+    icon: <Icon name="barChart" size={24} />,
   },
+  {
+    label: "Đơn hàng",
+    href: "/manage/order",
+    icon: <Icon name="listOrdered" size={24} />,
+  }
 ];
 
 export default function Sidebar() {
@@ -43,7 +48,7 @@ export default function Sidebar() {
         onClick={() => setOpen(true)}
         aria-label="Mở menu"
       >
-        <Menu className="w-6 h-6" />
+        <Icon name="menu" size={24} />
       </button>
 
       {/* Sidebar for desktop */}
