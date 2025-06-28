@@ -5,6 +5,7 @@ import { ISku } from "@/types/product";
 import { toast } from "react-toastify";
 import { cn } from "@/lib/utils";
 import { useAddToCartMutation } from "@/tanstack/cart";
+import { useAuthStore } from "@/zustand/store/userAuth";
 
 interface AddToCartButtonProps {
   selectedSku: ISku;
@@ -16,8 +17,12 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   quantity,
 }) => {
   const addToCartAPI = useAddToCartMutation();
-
+  const accessToken = useAuthStore((state) => state.accessToken);
   const handleAddToCart = () => {
+    if (!accessToken) {
+      toast.warning("Vui lòng đăng nhập trước khi mua hàng");
+      return;
+    }
     if (!selectedSku || quantity < 1) return;
     const now = new Date().toISOString();
     const body = {

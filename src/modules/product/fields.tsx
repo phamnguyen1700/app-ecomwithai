@@ -3,6 +3,12 @@ import { FormInputType } from "@/enum/FormInputType";
 export const Fields = () => {
     return [
         {
+            name: "search",
+            fieldType: FormInputType.TEXT,
+            placeholder: "Tìm kiếm sản phẩm",
+        },
+        {
+            name: "ingredients",
             fieldType: FormInputType.SELECT,
             placeholder: "Choose ingredients",
             options: [

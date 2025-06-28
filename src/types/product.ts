@@ -96,15 +96,13 @@ export interface IProductDetail {
 }
 
 export interface IProductResponse {
-    data: {
-        data: IProduct[];
+    data: IProduct[];
         metadata: {
             totalItems?: number;
             totalPages?: number;
             currentPage?: number;
             limit?: number;
         };
-    };
 }
 export interface ProductCardTypes {
     items?: any[];
@@ -113,3 +111,9 @@ export interface ProductCardTypes {
     col?: number;
     path?: string;
 }
+
+export interface ProductStoreState {
+    products: IProduct[];
+    setProducts: (products: IProduct[]) => void;
+    getProducts: () => IProduct[];
+  }

@@ -6,23 +6,18 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 import Icon from "@/components/assests/icons";
 import { useState, useEffect, useRef } from "react";
-import { useChat } from "ai/react";
 import { ChatInput } from "./chatInput";
+import { DotTyping } from "./dotTyping";
+import ProductCardInChat from "./productCardInChat";
+
+type Message = { role: string; content: string };
 
 export default function ChatBox() {
-    const {
-        messages,
-        input,
-        handleInputChange,
-        handleSubmit,
-        status,
-        append,
-    } = useChat({
-        api: "/api/comerce-gpt",
-    });
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [input, setInput] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [hasWelcomed, setHasWelcomed] = useState(false);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
+    const [isBotTyping, setIsBotTyping] = useState(false);
 
     useEffect(() => {
         if (messagesEndRef.current) {
@@ -31,19 +26,96 @@ export default function ChatBox() {
     }, [messages]);
 
     useEffect(() => {
-        if (isOpen && !hasWelcomed) {
-            append({
-                role: "user",
-                content: ""
-            });
-            setHasWelcomed(true);
+        if (isOpen && messages.length === 0) {
+            // Gửi một message rỗng để trigger backend trả về câu chào
+            sendMessage("", []);
         }
-    }, [isOpen, hasWelcomed, append]);
+    }, [isOpen, messages.length]);
+
+    // Hàm gửi message
+    async function sendMessage(userMessage: string, currentMessages: Message[]) {
+        setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+        setInput("");
+        setIsBotTyping(true);
+        try {
+            const res = await fetch("/api/comerce-gpt", {
+                method: "POST",
+                body: JSON.stringify({ messages: [...currentMessages, { role: "user", content: userMessage }] }),
+                headers: { "Content-Type": "application/json" },
+            });
+            if (!res.body) throw new Error("No response body");
+            const reader = res.body.getReader();
+            let assistantBuffer = "";
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                const chunk = new TextDecoder().decode(value);
+                chunk.split("\n").forEach(line => {
+                    // Tool result (a:)
+                    if (line.startsWith("a:")) {
+                        try {
+                            const data = JSON.parse(line.slice(2));
+                            // Nếu là object toolCall với result
+                            if (data.result && data.result.role === "assistant" && data.result.content) {
+                                assistantBuffer += data.result.content;
+                            }
+                        } catch {
+                            // Nếu là từng ký tự thì nối lại (tuỳ backend)
+                            const char = line.slice(2).replace(/^"|"$/g, "");
+                            assistantBuffer += char;
+                        }
+                    }
+                    // Giao tiếp thường (f: hoặc 0:)
+                    else if (line.startsWith("f:")) {
+                        try {
+                            const data = JSON.parse(line.slice(2));
+                            // Nếu là object có content thì lấy content, nếu là từng token thì nối lại
+                            if (typeof data === "string") {
+                                assistantBuffer += data;
+                            } else if (data.role === "assistant" && data.content) {
+                                assistantBuffer += data.content;
+                            }
+                        } catch {
+                            // Nếu là từng token kiểu 0:"..." thì cũng nối lại
+                            if (line.startsWith('0:')) {
+                                const token = line.slice(2).replace(/^"|"$/g, "");
+                                assistantBuffer += token;
+                            }
+                        }
+                    }
+                    // 3. Nếu là từng token kiểu 0:"..."
+                    else if (line.startsWith('0:')) {
+                        const token = line.slice(2).replace(/^"|"$/g, "");
+                        assistantBuffer += token;
+                    }
+                });
+            }
+            // Sau khi stream xong, nếu có nội dung assistant thì append vào UI
+            if (assistantBuffer.trim()) {
+                console.log("Assistant buffer:", assistantBuffer);
+                setMessages(prev => [
+                    ...prev,
+                    { role: "assistant", content: assistantBuffer }
+                ]);
+            }
+        } catch {
+            setMessages(prev => [
+                ...prev,
+                { role: "assistant", content: "Có lỗi xảy ra, vui lòng thử lại." }
+            ]);
+        }
+        setIsBotTyping(false);
+    }
+
+    // Xử lý submit form
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        if (input.trim()) sendMessage(input.trim(), messages);
+    }
 
     return (
         <div className="fixed bottom-4 right-4 z-50">
             {!isOpen && (
-
                 <Button
                     variant="ghost"
                     size="icon"
@@ -86,33 +158,80 @@ export default function ChatBox() {
                         <ScrollArea className="h-64 rounded-md border p-2 space-y-2">
                             {messages
                                 .filter((msg) => msg.content.trim() !== "")
-                                .map((msg, idx) => (
-                                    <div
-                                        key={idx}
-                                        className={`flex items-end gap-2 mb-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                                    >
-                                        {msg.role !== "user" && (
-                                            <Avatar className="w-4 h-4">
-                                                <AvatarImage src="/avatar.png" />
-                                                <AvatarFallback
-                                                    className="bg-[color:var(--tertiary)]"
+                                .map((msg, idx) => {
+                                    if (msg.role === "assistant") {
+                                        let parsed;
+                                        try {
+                                            parsed = JSON.parse(msg.content);
+                                        } catch {}
+                                        if (parsed && parsed.type === "product-list" && Array.isArray(parsed.products)) {
+                                            return (
+                                                <div
+                                                    key={idx}
+                                                    className="flex items-end gap-2 mb-2 justify-start"
                                                 >
-                                                    <Icon name="bot" className="w-2 h-2" color="white" />
-                                                </AvatarFallback>
-                                            </Avatar>
-                                        )}
+                                                    <Avatar className="w-4 h-4">
+                                                        <AvatarImage src="/avatar.png" />
+                                                        <AvatarFallback className="bg-[color:var(--tertiary)]">
+                                                            <Icon name="bot" className="w-2 h-2" color="white" />
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                    <div
+                                                        className="p-2 rounded-lg max-w-xs text-[12px] whitespace-pre-wrap bg-[color:var(--secondary)] text-black self-start max-w-[60%]"
+                                                    >
+                                                        <div className="mb-2">{parsed.message}</div>
+                                                        <div className="flex flex-col gap-1">
+                                                            {parsed.products.map((product: any) => (
+                                                                <ProductCardInChat key={product._id} product={product} compact />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+                                    }
+                                    // Mặc định: render như cũ
+                                    return (
                                         <div
-                                            className={`p-2 rounded-lg max-w-xs text-[12px] whitespace-pre-wrap ${msg.role === "user"
-                                                    ? "bg-[color:var(--primary)] text-white self-end ml-auto max-w-[60%]"
-                                                    : "bg-[color:var(--secondary)] text-black self-start max-w-[60%]"
-                                                }`}
+                                            key={idx}
+                                            className={`flex items-end gap-2 mb-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                                         >
-                                            {msg.content}
+                                            {msg.role !== "user" && (
+                                                <Avatar className="w-4 h-4">
+                                                    <AvatarImage src="/avatar.png" />
+                                                    <AvatarFallback
+                                                        className="bg-[color:var(--tertiary)]"
+                                                    >
+                                                        <Icon name="bot" className="w-2 h-2" color="white" />
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                            )}
+                                            <div
+                                                className={`p-2 rounded-lg max-w-xs text-[12px] whitespace-pre-wrap ${msg.role === "user"
+                                                        ? "bg-[color:var(--primary)] text-white self-end ml-auto max-w-[60%]"
+                                                        : "bg-[color:var(--secondary)] text-black self-start max-w-[60%]"
+                                                    }`}
+                                            >
+                                                {msg.content}
+                                            </div>
                                         </div>
+                                    );
+                                })}
+                            {isBotTyping && (
+                                <div className="flex items-end gap-2 mb-2 justify-start">
+                                    <Avatar className="w-4 h-4">
+                                        <AvatarImage src="/avatar.png" />
+                                        <AvatarFallback className="bg-[color:var(--tertiary)]">
+                                            <Icon name="bot" className="w-2 h-2" color="white" />
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div
+                                        className="p-2 rounded-lg max-w-xs text-[12px] bg-[color:var(--secondary)] text-black self-start max-w-[60%] flex items-center"
+                                        style={{ minWidth: 36 }}
+                                    >
+                                        <DotTyping />
                                     </div>
-                                ))}
-                            {status === 'streaming' && (
-                                <div className="text-[10px] text-gray-400 animate-pulse ml-6">Đang nhập...</div>
+                                </div>
                             )}
                             <div ref={messagesEndRef} />
                         </ScrollArea>
@@ -122,11 +241,11 @@ export default function ChatBox() {
                                 className="text-[12px]"
                                 placeholder="Aa"
                                 value={input}
-                                onChange={handleInputChange}
-                                onKeyDown={(e) => {
+                                onChange={e => setInput(e.target.value)}
+                                onKeyDown={e => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                         e.preventDefault();
-                                        handleSubmit();
+                                        handleSubmit(e);
                                     }
                                 }}
                             />
