@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DynamicInput from "../AppDynamicInput";
 import { Button } from "@/components/ui/button";
+
 interface AppFilterFormProps {
     filterItems?: any[];
     onSubmit?: any;

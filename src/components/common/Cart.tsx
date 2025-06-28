@@ -10,7 +10,7 @@ import { useCheckoutMutation } from "@/tanstack/checkout";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { useGetAddressQuery } from "@/tanstack/address";
+import { useGetAddressQuery, useAddAddressMutation } from "@/tanstack/address";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -19,6 +19,8 @@ import {
     DropdownMenuRadioGroup
 } from "@/components/ui/dropdown-menu";
 import { IAddress } from "@/types/address";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export default function Cart() {
     const { data: cartData, isLoading } = useCartQuery();
@@ -33,8 +35,12 @@ export default function Cart() {
     const [isBuy, setIsBuy] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
     const { data: addressData } = useGetAddressQuery();
-    const address = addressData?.data as IAddress[];
     const checkoutMutation = useCheckoutMutation();
+    const { mutate: addAddress } = useAddAddressMutation();
+    const { register, handleSubmit, reset } = useForm();
+    const [isAddingAddress, setIsAddingAddress] = useState(false);
+
+
     const handleCheckout = () => {
         try {
             if (isBuy) {
@@ -46,6 +52,20 @@ export default function Cart() {
             console.error("Checkout error:", error);
         }
     }
+
+    const onSubmitAddress = (data: any) => {
+        addAddress(data, {
+            onSuccess: () => {
+                toast.success("Thêm địa chỉ thành công");
+                reset();
+                setIsAddingAddress(false);
+                // Có thể refetch lại addressData nếu cần
+            },
+            onError: () => {
+                toast.error("Thêm địa chỉ thất bại");
+            }
+        });
+    };
 
     return (
         <Popover>
@@ -100,7 +120,7 @@ export default function Cart() {
                                                 <Button
                                                     variant="link"
                                                     size="sm"
-                                                    className="p-2 border rounded text-xs w-4 h-4 bg-white text-black border-none"
+                                                    className="p-2 border rounded text-xs w-4 h-4 text-black border-none hover:no-underline"
                                                     onClick={() => updateCartMutation.mutate({ skuId, productId, quantity: Math.max(1, quantity - 1) })}
                                                     disabled={quantity <= 1}
                                                 >-</Button>
@@ -108,7 +128,7 @@ export default function Cart() {
                                                 <Button
                                                     variant="link"
                                                     size="sm"
-                                                    className="p-2 border rounded text-xs w-4 h-4 bg-white text-black border-none"
+                                                    className="p-2 border rounded text-xs w-4 h-4 text-black border-none hover:no-underline"
                                                     onClick={() => updateCartMutation.mutate({ skuId, productId, quantity: quantity + 1 })}
                                                 >+</Button>
                                             </div>
@@ -120,54 +140,100 @@ export default function Cart() {
                                     </div>
                                 );
                             })}
-                            {isBuy && address?.length > 0 && (
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" className="w-full flex flex-col items-start gap-1 text-left px-3 py-2">
-                                            {selectedAddressId ? (
-                                                <>
-                                                    <div className="text-xs font-medium text-stone-800 dark:text-white">
-                                                        📍{address.find((addr) => addr._id === selectedAddressId)?.fullName} {address.find((addr) => addr._id === selectedAddressId)?.street}, {address.find((addr) => addr._id === selectedAddressId)?.city}...
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <span className="text-sm">Chọn địa chỉ giao hàng</span>
-                                            )}
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="w-[300px]">
-                                        <DropdownMenuRadioGroup
-                                            value={selectedAddressId || ""}
-                                            onValueChange={(val) => setSelectedAddressId(val)}
-                                        >
-                                            {address.map((addr: IAddress) => (
-                                                <DropdownMenuRadioItem
-                                                    key={addr._id}
-                                                    value={addr._id}
-                                                    className="!p-0"
-                                                >
-                                                    <div className="w-full ml-5 p-2 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
-                                                        <div className="flex flex-col text-right">
-                                                            <div className="text-[14px] font-semibold text-stone-800 dark:text-stone-100">
-                                                                📍 {addr.fullName}
-                                                                {addr.isDefault && (
-                                                                    <span className="ml-2 text-[12px] text-white bg-green-600 rounded px-1">
-                                                                        Mặc định
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                            <div className="text-[10px] text-stone-600 dark:text-stone-300 leading-snug">
-                                                                {addr.street}, {addr.city}, {addr.country} ({addr.postalCode})
-                                                            </div>
-                                                            <div className="text-[10px] text-stone-400">{addr.phone}</div>
+                            {isBuy && (
+                                addressData && addressData.length > 0 ? (
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="outline" className="w-full flex flex-col items-start gap-1 text-left px-3 py-2">
+                                                {selectedAddressId ? (
+                                                    <>
+                                                        <div className="text-xs font-medium text-stone-800 dark:text-white">
+                                                            📍{addressData.find((addr) => addr._id === selectedAddressId)?.fullName} {addressData.find((addr) => addr._id === selectedAddressId)?.street}, {addressData.find((addr) => addr._id === selectedAddressId)?.city}...
                                                         </div>
-                                                    </div>
-                                                </DropdownMenuRadioItem>
-                                            ))}
-                                        </DropdownMenuRadioGroup>
-                                    </DropdownMenuContent>
-
-                                </DropdownMenu>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-sm">Chọn địa chỉ giao hàng</span>
+                                                )}
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent className="w-[300px]">
+                                            <DropdownMenuRadioGroup
+                                                value={selectedAddressId || ""}
+                                                onValueChange={(val) => setSelectedAddressId(val)}
+                                            >
+                                                {addressData?.map((addr: IAddress) => (
+                                                    <DropdownMenuRadioItem
+                                                        key={addr._id}
+                                                        value={addr._id}
+                                                        className="!p-0"
+                                                    >
+                                                        <div className="w-full ml-5 p-2 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
+                                                            <div className="flex flex-col text-right">
+                                                                <div className="text-[14px] font-semibold text-stone-800 dark:text-stone-100">
+                                                                    📍 {addr.fullName}
+                                                                    {addr.isDefault && (
+                                                                        <span className="ml-2 text-[12px] text-white bg-green-600 rounded px-1">
+                                                                            Mặc định
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <div className="text-[10px] text-stone-600 dark:text-stone-300 leading-snug">
+                                                                    {addr.street}, {addr.city}, {addr.country} ({addr.postalCode})
+                                                                </div>
+                                                                <div className="text-[10px] text-stone-400">{addr.phone}</div>
+                                                            </div>
+                                                        </div>
+                                                    </DropdownMenuRadioItem>
+                                                ))}
+                                            </DropdownMenuRadioGroup>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                ) : (
+                                    <div className="border rounded p-3">
+                                        <div className="text-xs text-gray-600 mb-2">Thêm địa chỉ giao hàng</div>
+                                        <form onSubmit={handleSubmit(onSubmitAddress)} className="flex flex-col gap-2">
+                                            <input 
+                                                {...register("fullName", { required: true })} 
+                                                placeholder="Họ tên" 
+                                                className="input text-xs p-2 border rounded" 
+                                            />
+                                            <input 
+                                                {...register("phone", { required: true })} 
+                                                placeholder="Số điện thoại" 
+                                                className="input text-xs p-2 border rounded" 
+                                            />
+                                            <input 
+                                                {...register("street", { required: true })} 
+                                                placeholder="Địa chỉ" 
+                                                className="input text-xs p-2 border rounded" 
+                                            />
+                                            <div className="flex gap-2">
+                                                <input 
+                                                    {...register("city", { required: true })} 
+                                                    placeholder="Thành phố" 
+                                                    className="input text-xs p-2 border rounded flex-1" 
+                                                />
+                                                <input 
+                                                    {...register("postalCode", { required: true })} 
+                                                    placeholder="Mã bưu điện" 
+                                                    className="input text-xs p-2 border rounded w-24" 
+                                                />
+                                            </div>
+                                            <input 
+                                                {...register("country", { required: true })} 
+                                                placeholder="Quốc gia" 
+                                                className="input text-xs p-2 border rounded" 
+                                            />
+                                            <Button 
+                                                type="submit" 
+                                                className="bg-[var(--primary)] text-white text-xs py-1"
+                                                disabled={isAddingAddress}
+                                            >
+                                                {isAddingAddress ? "Đang thêm..." : "Thêm địa chỉ"}
+                                            </Button>
+                                        </form>
+                                    </div>
+                                )
                             )}
 
                             <div className="flex items-center font-semibold text-[15px] gap-2">
@@ -175,7 +241,7 @@ export default function Cart() {
                                 <span className="text-[var(--primary)] mr-2">{totalPrice.toLocaleString()}₫</span>
                                 <Button
                                     onClick={handleCheckout}
-                                    disabled={isBuy && !selectedAddressId}
+                                    disabled={isBuy && !selectedAddressId && (!addressData || addressData.length === 0)}
                                     className={cn(
                                         "bg-[var(--tertiary)] h-[35px] w-[100px] text-white text-[14px] font-bold tracking-wide rounded-none hover:bg-[var(--primary)]"
                                     )}
