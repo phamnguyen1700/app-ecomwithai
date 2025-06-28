@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     try {
 
         const json = await req.json();
-        let messages: Omit<Message, "id">[] = json.messages;
+        const messages: Omit<Message, "id">[] = json.messages;
         const products = await getAllProducts(); // fetch mới mỗi lần gọi
 
 

@@ -30,7 +30,7 @@ export default function ChatBox() {
             // Gửi một message rỗng để trigger backend trả về câu chào
             sendMessage("", []);
         }
-    }, [isOpen]);
+    }, [isOpen, messages.length]);
 
     // Hàm gửi message
     async function sendMessage(userMessage: string, currentMessages: Message[]) {
@@ -98,7 +98,7 @@ export default function ChatBox() {
                     { role: "assistant", content: assistantBuffer }
                 ]);
             }
-        } catch (err) {
+        } catch {
             setMessages(prev => [
                 ...prev,
                 { role: "assistant", content: "Có lỗi xảy ra, vui lòng thử lại." }
