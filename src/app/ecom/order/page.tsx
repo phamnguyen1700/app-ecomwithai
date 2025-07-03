@@ -12,12 +12,19 @@ import { IOrder } from "@/types/order";
 import { Button } from "@/components/ui/button";
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { formatDateToDisplay } from "@/hooks/formatDateToDisplay";
+import OrderDetailDialog from "@/app/ecom/order/OrderDetailDialog";
 
 export default function OrderPage() {
   const queryClient = useQueryClient();
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   // --- 1. useQuery now takes a single options object ---
+  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
+const [isDialogOpen, setIsDialogOpen] = useState(false);
+const handleShowDetail = (order: IOrder) => {
+  setSelectedOrder(order);
+  setIsDialogOpen(true);
+};
   const { data: orders = [], isLoading, error }: UseQueryResult<
     IOrder[],
     Error
@@ -49,7 +56,8 @@ export default function OrderPage() {
 
       {orders.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="min-w-full table-auto">
+          <table className="min-w-full table-auto text-center">
+
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-4 py-2">Mã đơn</th>
@@ -97,14 +105,10 @@ export default function OrderPage() {
                           {updatingId === order._id ? "Đang hủy…" : "Hủy"}
                         </Button>
                       )}
-                      <Button
-                        size="sm"
-                        onClick={() =>
-                          void (window.location.href = `/orders/${order._id}`)
-                        }
-                      >
+                      <Button size="sm" onClick={() => handleShowDetail(order)}>
                         Chi tiết
                       </Button>
+
                     </td>
                   </tr>
                 );
@@ -115,6 +119,13 @@ export default function OrderPage() {
       ) : (
         <p>Chưa có đơn hàng nào.</p>
       )}
+      <OrderDetailDialog
+  order={selectedOrder}
+  isOpen={isDialogOpen}
+  onClose={() => setIsDialogOpen(false)}
+/>
+
     </div>
   );
+  
 }

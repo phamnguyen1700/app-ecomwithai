@@ -1,5 +1,14 @@
-import { ISku } from "./product";
 
+export interface IOrderItem {
+    skuId: string;
+    skuName: string;
+    image: string;
+    priceSnapshot: number;
+    discountSnapshot: number;
+    stockSnapshot: number;
+    quantity: number;
+  }
+  
 export interface IOrder {
     _id: string;
     userId: string;
@@ -11,7 +20,7 @@ export interface IOrder {
     orderStatus: "Pending" | "Cancelled" | "Shipped" | "Delivered" | string;
     paymentStatus: "Paid" | "Unpaid" | "Failed" | string;
     isRefunded: boolean;
-    items: ISku[];
+    items: IOrderItem[];
     createdAt: string;
     updatedAt: string;
     __v: number;
@@ -25,4 +34,9 @@ export interface IOrderResponse {
         currentPage?: number;
         limit?: number;
     };
+}
+export interface IOrderDetailDialogProps {
+  order: IOrder | null;
+  isOpen: boolean;
+  onClose: () => void;
 }
