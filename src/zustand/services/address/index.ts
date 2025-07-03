@@ -6,7 +6,7 @@ export const getAddressAPI = async () => {
     return res.data;
 };
 
-export const addAddressAPI = (data: {
+export const addAddressAPI = async (data: {
     fullName: string;
     phone: string;
     street: string;
@@ -14,6 +14,11 @@ export const addAddressAPI = (data: {
     country: string;
     postalCode: string;
     isDefault: boolean;
-}) => {
-    return post("/address", data);
-};
+  }): Promise<IAddress> => {
+    const res = await post<IAddress>("/address", data);
+    return res.data; // ✅ trả ra đúng kiểu
+  };
+
+export const setDefaultAddressAPI = (id: string) => {
+    return post(`/address/${id}/set-default`);
+  };
