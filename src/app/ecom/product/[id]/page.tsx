@@ -15,12 +15,18 @@ export default function ProductDetail() {
   const { data: product, isLoading, error } = useProductDetail(id as string);
   const [quantity, setQuantity] = useState(1);
   const [selectedSku, setSelectedSku] = useState<ISku | null>(null);
+  const [selectedImageIdx, setSelectedImageIdx] = useState(0);
 
   useEffect(() => {
     if (product?.skus?.length) {
       setSelectedSku(product.skus[0]);
     }
   }, [product]);
+
+  useEffect(() => {
+    setSelectedImageIdx(0);
+  }, [selectedSku]);
+
 
   if (isLoading)
     return <p className="text-center py-10">Đang tải sản phẩm...</p>;
@@ -44,18 +50,22 @@ export default function ProductDetail() {
         <div>
           <div className="relative w-full h-[400px] border rounded-lg overflow-hidden">
             <Image
-              src={selectedSku?.image?.trim() || "/placeholder.jpg"}
+              src={selectedSku?.images?.[selectedImageIdx]?.trim() || "/placeholder.jpg"}
               alt={product.name}
               layout="fill"
               objectFit="cover"
             />
           </div>
           <div className="flex justify-center gap-4 mt-4">
-            {product.skus?.slice(0, 3).map((s) => (
-              <div key={s._id} className="relative w-16 h-16 border rounded-md overflow-hidden">
+            {selectedSku?.images?.map((img, idx) => (
+              <div
+                key={idx}
+                className={`relative w-16 h-16 border rounded-md overflow-hidden cursor-pointer ${selectedImageIdx === idx ? 'border-black' : 'border-gray-300'}`}
+                onClick={() => setSelectedImageIdx(idx)}
+              >
                 <Image
-                  src={s.image?.trim() || '/assets/blank.png'}
-                  alt={s.variantName}
+                  src={img?.trim() || '/assets/blank.png'}
+                  alt={selectedSku.variantName}
                   layout="fill"
                   objectFit="cover"
                 />

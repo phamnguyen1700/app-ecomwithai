@@ -1,17 +1,30 @@
-import { ISku } from "./product";
+export type PaymentMethod = "Stripe" | "COD" | "Banking" | string;
+export type OrderStatus = "Pending" | "Cancelled" | "Shipped" | "Delivered" | string;
+export type PaymentStatus = "Paid" | "Unpaid" | "Failed" | string;
+
+export interface IOrderItem {
+    skuId: string;
+    productId: string;
+    skuName: string;
+    quantity: number;
+    priceSnapshot: number;
+    discountSnapshot: number;
+    stockSnapshot: number;
+    image?: string;
+}
 
 export interface IOrder {
     _id: string;
     userId: string;
     addressId: string;
     totalAmount: number;
-    paymentMethod: "Stripe" | "COD" | string;
+    paymentMethod: PaymentMethod;
     isPaid: boolean;
     paidAt: string; // ISO string
-    orderStatus: "Pending" | "Cancelled" | "Shipped" | "Delivered" | string;
-    paymentStatus: "Paid" | "Unpaid" | "Failed" | string;
+    orderStatus: OrderStatus;
+    paymentStatus: PaymentStatus;
     isRefunded: boolean;
-    items: ISku[];
+    items: IOrderItem[];
     createdAt: string;
     updatedAt: string;
     __v: number;
@@ -19,10 +32,10 @@ export interface IOrder {
 
 export interface IOrderResponse {
     data: IOrder[];
-    metadata: {
-        totalItems?: number;
-        totalPages?: number;
-        currentPage?: number;
-        limit?: number;
+    meta: {
+        totalItems: number;
+        totalPages: number;
+        currentPage: number;
+        limit: number;
     };
 }

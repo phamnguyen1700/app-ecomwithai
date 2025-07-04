@@ -54,3 +54,11 @@ body {
 .super-thin-scrollbar::-webkit-scrollbar-track {
   background: white; 
 }
+
+.ant-image-preview-root,
+.ant-image-preview-wrap {
+  z-index: 9999 !important;
+}
+.ant-image-preview-mask {
+  z-index: 9998 !important;
+}

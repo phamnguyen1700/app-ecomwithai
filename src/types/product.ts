@@ -20,7 +20,7 @@ export interface ISku {
     returnCount: number;
     status: string;
     discount: number;
-    image: string;
+    images: string[];
     weight: number;
     dimensions: IDimensions;
     createdAt: string;
@@ -48,6 +48,7 @@ export interface IProduct {
 }
 export interface ISku {
     _id: string;
+    localId?: string;
     productId: string;
     variantName: string;
     price: number;
@@ -62,7 +63,7 @@ export interface ISku {
     returnCount: number;
     status: string;
     discount: number;
-    image: string;
+    images: string[];
     weight: number;
     dimensions: {
         length: number;
@@ -116,4 +117,67 @@ export interface ProductStoreState {
     products: IProduct[];
     setProducts: (products: IProduct[]) => void;
     getProducts: () => IProduct[];
+  }
+
+  export interface IProductUpdatePayload {
+    name?: string;
+    brand?: string;
+    description?: string;
+    ingredients?: string[];
+    skinConcerns?: string[];
+    images?: string[];
+    suitableForSkinTypes?: string[];
+    isActive?: boolean;
+  }
+
+  export interface ISkuUpdatePayload {
+    variantName?: string;
+    price?: number;
+    stock?: number;
+    reservedStock?: number;
+    batchCode?: string;
+    discount?: number;
+    status?: string;
+    images?: string[];
+    localId?: string;
+  }
+
+  export interface IProductCreatePayload {
+    name: string;
+    brand: string;
+    description: string;
+    ingredients: string[];
+    skinConcerns: string[];
+    suitableForSkinTypes: string[];
+  }
+
+  export type SkuFormulationType = "cream" | "gel" | "serum" | "foam" | "lotion";
+  export type SkuStatus = "active" | "near_expiry" | "returned" | "hidden" | "discontinued";
+
+  export interface SkuDimensionsDto {
+    length: number;
+    width: number;
+    height: number;
+  }
+
+  export interface IProductCreateSkuPayload {
+    productId: string;
+    variantName: string;
+    price: number;
+    stock: number;
+    reservedStock?: number;
+    batchCode?: string;
+    manufacturedAt?: string;
+    expiredAt?: string;
+    shelfLifeMonths?: number;
+    formulationType?: SkuFormulationType;
+    returnable?: boolean;
+    returnCount?: number;
+    status?: SkuStatus;
+    discount?: number;
+    images?: string[];
+    weight?: number;
+    dimensions?: SkuDimensionsDto;
+    internalNotes?: string;
+    localId?: string;
   }
