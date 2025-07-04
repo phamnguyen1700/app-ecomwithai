@@ -29,7 +29,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       productId: selectedSku.productId,
       skuId: selectedSku._id,
       skuName: selectedSku.variantName,
-      image: selectedSku.image,
+      image: selectedSku.images[0] || "",
       quantity,
       selected: true,
       addedAt: now,

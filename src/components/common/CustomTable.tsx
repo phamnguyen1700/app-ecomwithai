@@ -34,8 +34,8 @@ export default function CustomTable<T>({
 
         {/* Body */}
         <TableBody>
-          {records.length > 0 ? (
-            records.map((record: T, rowIndex: number) => (
+          {records?.length > 0 ? (
+            records?.map((record: T, rowIndex: number) => (
               <TableRow
                 key={rowIndex}
                 className="border-b border-gray-400 h-12 group text-[color:var(--text-color)] hover:bg-[color:var(--secondary)] cursor-pointer"

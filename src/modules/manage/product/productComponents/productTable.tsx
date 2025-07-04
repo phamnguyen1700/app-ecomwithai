@@ -8,7 +8,7 @@ import { useProducts } from "@/tanstack/product";
 import ProductDetailDialog from "./productDetailDialog";
 export default function ProductTable() {
     const { data: products, isLoading } = useProducts();
-    const [productsData, setProductsData] = useState<any>();
+    const [productsData, setProductsData] = useState<any[]>([]);
     const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(
         null
     );

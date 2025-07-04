@@ -15,7 +15,8 @@ import {
     Menu,
     Home,
     Package,
-    BarChart
+    BarChart,
+    ImagePlus
   } from "lucide-react";
   
   const icons = {
@@ -34,7 +35,8 @@ import {
     menu: Menu,
     home: Home,
     package: Package,
-    barChart: BarChart
+    barChart: BarChart,
+    imagePlus: ImagePlus
   };
   
   interface IconProps extends LucideProps {
