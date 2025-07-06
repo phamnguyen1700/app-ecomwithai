@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { IOrderDetailDialogProps } from "@/types/order";
 import { formatMoney } from "@/hooks/formatMoney";
 import { formatDateToDisplay } from "@/hooks/formatDateToDisplay";
-import { IProduct } from "@/types/product";
 export default function OrderDetailDialog({
   order,
   isOpen,
