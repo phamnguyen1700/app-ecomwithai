@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { IOrderDetailDialogProps } from "@/types/order";
 import { formatMoney } from "@/hooks/formatMoney";
 import { formatDateToDisplay } from "@/hooks/formatDateToDisplay";
-
+import { IProduct } from "@/types/product";
 export default function OrderDetailDialog({
   order,
   isOpen,
@@ -71,6 +71,10 @@ export default function OrderDetailDialog({
                   key={item.skuId || index}
                   className="p-3 border border-gray-300 rounded bg-white space-y-2"
                 >
+                  <div>
+                    <Label>Mã sản phẩm</Label>
+                    <Input disabled defaultValue={item.skuId} />
+                  </div>
                   <div>
                     <Label>Phiên bản</Label>
                     <Input disabled defaultValue={item.skuName} />
