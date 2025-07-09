@@ -4,7 +4,7 @@ export const routesConfig = {
     register: "/register",
     products: "/ecom/product",
     cart: "/ecom/cart",
-    profile: "/ecom/profile",
+    profile: "/ecom/profile_pop_up",
     settings: "/ecom/settings",
     logout: "/ecom/logout",
 };

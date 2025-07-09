@@ -39,3 +39,8 @@ export interface IOrderResponse {
         limit: number;
     };
 }
+export interface IOrderDetailDialogProps {
+  order: IOrder | null;
+  isOpen: boolean;
+  onClose: () => void;
+}
