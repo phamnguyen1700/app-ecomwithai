@@ -1,4 +1,7 @@
-import { addAddressAPI, getAddressAPI } from "@/zustand/services/address";
+import {addAddressAPI,
+        getAddressAPI,
+        setDefaultAddressAPI,} 
+        from "@/zustand/services/address";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useGetAddressQuery = () => {
@@ -13,3 +16,8 @@ export const useAddAddressMutation = () => {
         mutationFn: addAddressAPI,
     });
 };
+export const useSetDefaultAddressMutation = () => {
+    return useMutation({
+      mutationFn: setDefaultAddressAPI,
+    });
+  };
