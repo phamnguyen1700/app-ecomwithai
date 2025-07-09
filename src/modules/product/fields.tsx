@@ -1,35 +1,51 @@
-import { FormInputType } from "@/enum/FormInputType";
+"use client";
 
-export const Fields = () => {
-    return [
-        {
-            name: "search",
-            fieldType: FormInputType.TEXT,
-            placeholder: "Tìm kiếm sản phẩm",
-        },
-        {
-            name: "ingredients",
-            fieldType: FormInputType.SELECT,
-            placeholder: "Choose ingredients",
-            options: [
-                { label: "AHA", value: "AHA" },
-                { label: "BHA", value: "BHA" },
-                { label: "PHA", value: "PHA" },
-                { label: "Tea Tree Extract", value: "Tea Tree Extract" },
-                { label: "Niacinamide", value: "Niacinamide" },
-            ],
-        },
-        {
-            name: "Skin types",
-            fieldType: FormInputType.SELECT,
-            placeholder: "Choose skinConcerns",
-            options: [
-                { label: "Da thường", value: "normal" },
-                { label: "Da khô", value: "dry" },
-                { label: "Da dầu", value: "oily" },
-                { label: "Da hỗn hợp", value: "combination" },
-                { label: "Da nhạy cảm", value: "sensitive" },
-            ],
-        },
+import { FormInputType } from "@/enum/FormInputType";
+import { useFilterOptions } from "@/tanstack/filter";
+
+export function useFilterFields() {
+    const { brands, skinTypes, ingredients,skinConcerns, isLoading } = useFilterOptions();
+  
+    const fields = [
+      {
+        name: "brand",
+        fieldType: FormInputType.SELECT,
+        placeholder: "Chọn thương hiệu",
+        options: [{ label: "Tất cả", value: "all" }].concat(
+          brands.map(b => ({ label: b, value: b }))
+        ),
+      },
+      {
+        name: "skinType",
+        fieldType: FormInputType.SELECT,
+        placeholder: "Chọn loại da",
+        options: [{ label: "Tất cả", value: "all" }].concat(
+          skinTypes.map(s => ({ label: s, value: s }))
+        ),
+      },
+      {
+        name: "skinConcerns",  // ← thêm field mới
+        fieldType: FormInputType.SELECT,
+        placeholder: "Chọn vấn đề da",
+        options: [{ label: "Tất cả", value: "all" }, ...skinConcerns.map(c => ({ label: c, value: c }))]
+      },
+      {
+        name: "ingredients",               // <-- Đúng key
+        fieldType: FormInputType.SELECT,
+        placeholder: "Chọn thành phần",
+        options: [{ label: "Tất cả", value: "all" }].concat(
+          ingredients.map(i => ({ label: i, value: i }))
+        ),
+      },
+      {
+        name: "priceRange",
+        fieldType: FormInputType.SLIDER,
+        placeholder: "Khoảng giá",
+        min: 0,
+        max: 2_000_000,
+        step: 10_000,
+      },
     ];
-};
+  
+    return { fields, isLoading };
+  }

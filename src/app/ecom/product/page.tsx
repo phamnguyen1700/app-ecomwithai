@@ -1,14 +1,14 @@
+// src/app/ecom/product/page.tsx
+import { Metadata } from "next";
 import { createMetadata } from "@/components/core/AppPageMeta";
 import { AppTypes } from "@/enum/home";
-import { ProductPage } from "@/modules/product/ProductPage";
-import { Metadata } from "next";
-import React from "react";
+import ProductPage from "@/modules/product/index";  // <-- default import
 
 export const metadata: Metadata = createMetadata({
-    title: AppTypes.PRODUCTS,
-    description: AppTypes.DESCRIPTION,
+  title: AppTypes.PRODUCTS,
+  description: AppTypes.DESCRIPTION,
 });
-const Proudct = () => {
-    return <ProductPage />
-};
-export default Proudct;
+
+export default function ProductRoute() {
+  return <ProductPage />;
+}
