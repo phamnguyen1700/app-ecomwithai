@@ -58,11 +58,6 @@ const navItems = [
                 href: "/manage/report/address",
                 icon: <Icon name="mapPin" size={20} />,
             },
-            {
-                label: "Giỏ hàng",
-                href: "/manage/report/cart",
-                icon: <Icon name="shoppingCart" size={20} />,
-            },
         ],
     },
     {
