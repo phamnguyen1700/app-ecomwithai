@@ -78,3 +78,8 @@ export interface OrderAnalytics {
     orderByStatus: OrderStatusCount[];
     monthlySales: MonthlySales[];
 }
+export interface IOrderDetailDialogProps {
+    order: IOrder | null;
+    isOpen: boolean;
+    onClose: () => void;
+}
