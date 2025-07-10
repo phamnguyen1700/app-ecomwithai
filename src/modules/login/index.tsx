@@ -4,7 +4,6 @@ import { loginFields } from "./fields";
 import { useLogin } from "@/tanstack/auth/login";
 import { AuthTypes } from "@/enum/auth";
 import { Button } from "@/components/ui/button";
-import Icon from "@/components/assests/icons";
 const LoginPage = () => {
     const loginMutation = useLogin();
 
@@ -19,7 +18,7 @@ const LoginPage = () => {
             <AppForm
                 trigger={
                     <Button variant="ghost" className="p-2">
-                        <Icon name="user" size={20} />
+                        Đăng nhập
                     </Button>
                 }
                 title={AuthTypes.LOGIN}

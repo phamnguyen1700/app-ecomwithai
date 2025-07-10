@@ -7,3 +7,5 @@ export const getAllOrder = async (filter = {}) => {
     });
     return res.data;
 };
+
+export const getOrderDetail = (id: string) => get(`/order/${id}`);

@@ -8,6 +8,7 @@ import { useAuthStore } from "@/zustand/store/userAuth";
 import LogoutPage from "@/modules/logout";
 import AppDropDown from "../core/AppDropDown";
 import Cart from "./Cart";
+import RegisterPage from "@/modules/register";
 
 const user_menu = [
     { name: "Profile", route: routesConfig.profile },
@@ -69,7 +70,12 @@ export default function Navbar() {
                 <div className="flex items-center space-x-4">
                     <Cart />
                     {/* Login Button */}
-                    {!user && <LoginPage />}
+                    {!user && (
+                        <>
+                            <LoginPage />
+                            <RegisterPage />
+                        </>
+                    )}
                     {user && (
                         <div className="flx items-center space-x-2">
                             <span className="text-xs">
