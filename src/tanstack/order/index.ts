@@ -1,5 +1,9 @@
 import { get } from "@/util/Http";
-import { getAllDelivery, getDeliveryDetail, getOrderDetail } from "@/zustand/services/order";
+import {
+    getAllDelivery,
+    getDeliveryDetail,
+    getOrderDetail,
+} from "@/zustand/services/order";
 import { useQuery } from "@tanstack/react-query";
 
 export const useAllOrder = (params: Record<string, any> = {}) => {
