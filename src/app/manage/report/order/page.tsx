@@ -33,7 +33,9 @@ export default function Report() {
     });
 
     const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-    const { data, isLoading } = useAllOrder(filter);
+    const { data } = useAllOrder(filter);
+    console.log(data);
+    
     const { data: analytics } = useAnalytics();
     const { data: users } = useAllUser();
 
@@ -62,9 +64,7 @@ export default function Report() {
         <main className="p-10 space-y-6">
             <h1 className="text-4xl font-bold text-center">Order Report</h1>
             <div className="flex flex-col lg:flex-row gap-6">
-                {/* Left: Order Table */}
                 <div className="flex-1 space-y-4">
-                    {/* Filters */}
                     <div className="flex flex-wrap gap-4">
                         <Input
                             placeholder="Search by email"
@@ -98,7 +98,6 @@ export default function Report() {
                         </Select>
                     </div>
 
-                    {/* Table Card */}
                     <div className="rounded-2xl border bg-background p-4 shadow-sm">
                         <h2 className="text-xl font-semibold mb-4">
                             Danh sách đơn hàng
@@ -166,7 +165,6 @@ export default function Report() {
                     </div>
                 </div>
 
-                {/* Right: Analytics Chart */}
                 <div className="w-full lg:max-w-md">
                     <div className="rounded-2xl border bg-background p-6 shadow-sm h-full">
                         <h2 className="text-xl font-semibold mb-4">

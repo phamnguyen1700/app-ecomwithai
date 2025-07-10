@@ -30,7 +30,8 @@ export default function ProductPage() {
     });
 
     const { data, isLoading, isFetching } = useProducts(filters);
-
+    console.log(data);
+    
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilters((prev) => ({ ...prev, name: e.target.value, page: 1 }));
     };

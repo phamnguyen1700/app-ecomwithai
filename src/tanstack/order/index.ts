@@ -1,3 +1,4 @@
+import { IOrderResponse, OrderAnalytics, OrderDetail } from "@/types/order";
 import { get } from "@/util/Http";
 import { getOrderDetail } from "@/zustand/services/order";
 import { useQuery } from "@tanstack/react-query";
@@ -12,28 +13,29 @@ export const useAllOrder = (params: Record<string, any> = {}) => {
         ...(status && status !== "all" ? { status } : {}),
     };
 
-    return useQuery({
+    return useQuery<IOrderResponse>({
         queryKey: ["order-admin", queryParams],
         queryFn: async () => {
-            const res = await get("/order/admin", {
+            const res = await get<IOrderResponse>("/order/admin", {
                 params: queryParams,
             });
             return res.data;
         },
     });
 };
+
 export const useOrderDetail = (id?: string) =>
-    useQuery({
+    useQuery<OrderDetail>({
         queryKey: ["order-detail", id],
         queryFn: () => getOrderDetail(id!),
         enabled: !!id,
     });
 
 export const useAnalytics = () => {
-    return useQuery({
+    return useQuery<OrderAnalytics>({
         queryKey: ["order-analytics"],
         queryFn: async () => {
-            const res = await get("/order/admin/analytics");
+            const res = await get<OrderAnalytics>("/order/admin/analytics");
             return res.data;
         },
     });

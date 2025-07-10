@@ -12,7 +12,7 @@ import {
 
 interface Props {
     data: {
-        _id: number; // tháng (1–12)
+        _id: number;
         totalSales: number;
         count: number;
     }[];

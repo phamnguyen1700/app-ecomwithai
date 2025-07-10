@@ -45,9 +45,9 @@ const AddressPage = () => {
                                     cy="50%"
                                     outerRadius={100}
                                     label={({ name, percent }) =>
-                                        `${name} (${(percent * 100).toFixed(
-                                            0
-                                        )}%)`
+                                        `${name} (${(
+                                            (percent ?? 0) * 100
+                                        ).toFixed(0)}%)`
                                     }
                                     onMouseEnter={(_, index) =>
                                         setActiveCity(stats[index].city)
@@ -64,8 +64,6 @@ const AddressPage = () => {
                                 <Tooltip
                                     formatter={(
                                         value: number,
-                                        _name: string,
-                                        _props: any
                                     ) => [`${value}`, "Số lượng"]}
                                     labelFormatter={(label) =>
                                         `Thành phố: ${label}`
@@ -75,7 +73,6 @@ const AddressPage = () => {
                             </PieChart>
                         </ResponsiveContainer>
 
-                        {/* Danh sách user chi tiết */}
                         <div className="mt-6">
                             <h3 className="font-semibold text-base mb-2">
                                 🧑 Danh sách người dùng theo thành phố

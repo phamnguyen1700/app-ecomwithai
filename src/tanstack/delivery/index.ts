@@ -1,4 +1,5 @@
-import { getAllDelivery, getDeliveryDetail } from "@/zustand/services/delievery";
+import { DeliveryDetail, DeliveryListResponse } from "@/types/delievery";
+import { get } from "@/util/Http";
 import { useQuery } from "@tanstack/react-query";
 
 export const useDeliveries = (params: {
@@ -7,15 +8,23 @@ export const useDeliveries = (params: {
     search?: string;
     status?: string;
 }) => {
-    return useQuery({
+    return useQuery<DeliveryListResponse>({
         queryKey: ["deliveries", params],
-        queryFn: () => getAllDelivery(params),
+        queryFn: async () => {
+            const res = await get<DeliveryListResponse>("/delivery/admin", {
+                params,
+            });
+            return res.data;
+        },
     });
 };
 
 export const useDeliveryDetail = (id?: string) =>
-    useQuery({
+    useQuery<DeliveryDetail>({
         queryKey: ["delivery-detail", id],
-        queryFn: () => getDeliveryDetail(id!),
+        queryFn: async () => {
+            const res = await get<DeliveryDetail>(`/delivery/${id}`);
+            return res.data;
+        },
         enabled: !!id,
     });

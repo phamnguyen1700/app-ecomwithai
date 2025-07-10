@@ -47,7 +47,6 @@ const CouponPage = () => {
     }, [users]);
     return (
         <div className="p-6 space-y-6">
-            {/* FILTER */}
             <Card className="p-6 space-y-4 shadow-sm border border-muted bg-muted/30">
                 <h2 className="text-xl font-bold text-primary">
                     🎟️ Danh sách mã giảm giá
@@ -81,6 +80,7 @@ const CouponPage = () => {
                                 }));
                             } else {
                                 setFilters((prev) => {
+                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                     const { isUsed: _, ...rest } = prev;
                                     return rest;
                                 });
@@ -106,7 +106,6 @@ const CouponPage = () => {
                 </div>
             </Card>
 
-            {/* TABLE */}
             <Card className="p-4 shadow-sm border bg-background rounded-xl">
                 {isLoading ? (
                     <Skeleton className="w-full h-48" />
@@ -136,7 +135,7 @@ const CouponPage = () => {
                                                 {coupon.code}
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant="success">
+                                                <Badge className="bg-blue-500 text-white hover:bg-blue-600">
                                                     {coupon.value}%
                                                 </Badge>
                                             </TableCell>
@@ -147,10 +146,10 @@ const CouponPage = () => {
                                             </TableCell>
                                             <TableCell className="text-center">
                                                 <Badge
-                                                    variant={
+                                                    className={
                                                         coupon.isUsed
-                                                            ? "destructive"
-                                                            : "outline"
+                                                            ? "bg-red-500 text-white"
+                                                            : "bg-green-500 text-white"
                                                     }
                                                 >
                                                     {coupon.isUsed

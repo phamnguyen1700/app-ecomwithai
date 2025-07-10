@@ -44,6 +44,8 @@ const columns = (onViewDetail: (id: string) => void) => [
 
 const Delivery = () => {
     const { data, isLoading } = useDeliveries({ page: 1, limit: 10 });
+    console.log(data);
+    
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const { data: detail, isLoading: loadingDetail, isError } = useDeliveryDetail(
         selectedId || undefined
