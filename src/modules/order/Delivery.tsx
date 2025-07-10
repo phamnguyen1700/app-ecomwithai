@@ -1,5 +1,5 @@
 "use client";
-import { useDeliveries, useDeliveryDetail } from "@/tanstack/order";
+import { useDeliveries, useDeliveryDetail } from "@/tanstack/delivery";
 import { Button, Descriptions, Modal, Spin, Table, Tag } from "antd";
 import React, { useState } from "react";
 
