@@ -52,10 +52,18 @@ export default function Navbar() {
         {/* Menu */}
         <div className="flex-initial w-1/3">
           <ul className="flex space-x-4 text-sm font-medium">
-            <li><Link href={routesConfig.home}>Trang Chủ</Link></li>
-            <li><Link href={routesConfig.products}>Sản Phẩm</Link></li>
-            <li><Link href={routesConfig.cart}>Giỏ Hàng</Link></li>
-            <li><Link href="/digital">Digital</Link></li>
+            <li>
+              <Link href={routesConfig.home}>Trang Chủ</Link>
+            </li>
+            <li>
+              <Link href={routesConfig.products}>Sản Phẩm</Link>
+            </li>
+            <li>
+              <Link href={routesConfig.order}>Đơn hàng</Link>
+            </li>
+            <li>
+              <Link href="/digital">Digital</Link>
+            </li>
           </ul>
         </div>
 

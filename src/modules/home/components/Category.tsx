@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { HomeTypes } from "@/types/home";
 import Image from "next/image";
 import React from "react";
+import { useRouter } from "next/navigation";
 const columnClassMap: Record<number, string> = {
     1: "grid-cols-1",
     2: "grid-cols-2",
@@ -13,6 +14,7 @@ const columnClassMap: Record<number, string> = {
 const Category = ({ title, categories, btn, columns }: HomeTypes) => {    
     const baseCols = columns ?? 3;
     const gridColumns = columnClassMap[baseCols] || "grid-cols-3";
+      const router = useRouter();
     return (
         <div>
             {title && (
@@ -49,11 +51,14 @@ const Category = ({ title, categories, btn, columns }: HomeTypes) => {
                         )}
                         {btn && btn === "Buy Now" && (
                             <Button
-                                variant="ghost"
-                                className="text-[color:var(--text-color)] font-normal"
-                            >
-                                {btn}
-                            </Button>
+                            variant="ghost"
+                            className="mt-2 text-[color:var(--text-color)] font-normal"
+                            onClick={() =>
+                              router.push(`/ecom/product`)
+                            }
+                          >
+                            {btn}
+                          </Button>
                         )}
                         {btn && btn === "Read More" && (
                             <Button
