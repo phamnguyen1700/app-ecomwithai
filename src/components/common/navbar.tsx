@@ -58,7 +58,7 @@ export default function Navbar() {
               <Link href={routesConfig.products}>Sản Phẩm</Link>
             </li>
             <li>
-              <Link href={routesConfig.cart}>Cart</Link>
+              <Link href={routesConfig.order}>Đơn hàng</Link>
             </li>
             <li>
               <Link href="/digital">Digital</Link>

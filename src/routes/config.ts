@@ -7,6 +7,7 @@ export const routesConfig = {
     profile: "/ecom/profile_pop_up",
     settings: "/ecom/settings",
     logout: "/ecom/logout",
+    order:"/ecom/order",
 };
 export const images = {
     logo: '/assets/logo.png',
