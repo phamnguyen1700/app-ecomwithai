@@ -6,6 +6,7 @@ export interface User {
     avatar?: string;
     accessToken?: string;
     refreshToken?: string;
+    isVerified?: boolean;
 }
 export interface LoginTypes {
     accessToken: string;

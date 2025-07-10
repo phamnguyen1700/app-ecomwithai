@@ -1,36 +1,37 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import Icon from "@/components/assests/icons";
 import { routesConfig } from "@/routes/config";
-import LoginPage from "@/modules/login";
-import LogoutPage from "@/modules/logout";
-import AppDropDown from "../core/AppDropDown";
-import Cart from "./Cart";
-import UserProfileDialog from "@/modules/profile_pop_up/UserProfileDialog";
 import { useAuthStore } from "@/zustand/store/userAuth";
 import { User } from "@/types/user";
 
-export default function Navbar() {
-  const user = useAuthStore((state) => state.user) as User;
-  const router = useRouter();
-  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+import Icon from "@/components/assests/icons";
+import AppDropDown from "../core/AppDropDown";
+import Cart from "./Cart";
+import LoginPage from "@/modules/login";
+import RegisterPage from "@/modules/register";
+import LogoutPage from "@/modules/logout";
+import UserProfileDialog from "@/modules/profile_pop_up/UserProfileDialog";
 
-  const user_menu = [
+export default function Navbar() {
+  const user = useAuthStore((state) => state.user) as User | null;
+  const router = useRouter();
+
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
+
+  const handleProfileClick = () => setIsProfileDialogOpen(true);
+  const handleSettingsClick = () => router.push(routesConfig.settings);
+
+  const userMenu = [
     {
       name: "Profile",
-      onClick: () => {
-        setSelectedUser(user);
-        setIsProfileDialogOpen(true);
-      },
+      onClick: handleProfileClick,
     },
     {
       name: "Cài đặt",
-      onClick: () => router.push(routesConfig.settings),
+      onClick: handleSettingsClick,
     },
     {
       component: <LogoutPage />,
@@ -51,52 +52,32 @@ export default function Navbar() {
         {/* Menu */}
         <div className="flex-initial w-1/3">
           <ul className="flex space-x-4 text-sm font-medium">
-            <li>
-              <Link href={routesConfig.home}>Trang Chủ</Link>
-            </li>
-            <li>
-              <Link href={routesConfig.products}>Sản Phẩm</Link>
-            </li>
-            <li>
-              <Link href={routesConfig.cart}>Cart</Link>
-            </li>
-            <li>
-              <Link href="/digital">Digital</Link>
-            </li>
+            <li><Link href={routesConfig.home}>Trang Chủ</Link></li>
+            <li><Link href={routesConfig.products}>Sản Phẩm</Link></li>
+            <li><Link href={routesConfig.cart}>Giỏ Hàng</Link></li>
+            <li><Link href="/digital">Digital</Link></li>
           </ul>
         </div>
 
-        {/* Search */}
-        <div className="flex-initial w-64">
-          <div className="relative flex items-center">
-            <Input
-              type="search"
-              placeholder="Search for products..."
-              className="pr-10"
-            />
-            <Icon
-              name="search"
-              size={20}
-              className="absolute right-3 text-gray-400"
-            />
-          </div>
-        </div>
-
-        {/* Cart + User icons */}
+        {/* Cart + Auth */}
         <div className="flex-none mr-5">
           <div className="flex items-center space-x-4">
             <Cart />
-            {!user && <LoginPage />}
-            {user && (
+            {!user ? (
+              <>
+                <LoginPage />
+                <RegisterPage />
+              </>
+            ) : (
               <div className="flex items-center space-x-2">
-                <span className="text-xs">Xin chào, {user.email}</span>
+                <span className="text-xs">Xin chào, {user.email || "user"}</span>
                 <AppDropDown
                   title={
                     <div className="p-2 rounded hover:bg-gray-100 cursor-pointer">
                       <Icon name="user" size={20} />
                     </div>
                   }
-                  items={user_menu}
+                  items={userMenu}
                 />
               </div>
             )}
@@ -104,14 +85,13 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* User Profile Dialog */}
-      {selectedUser && (
+      {user && (
         <UserProfileDialog
-          key={selectedUser._id} // 👉 ép component render lại nếu user khác
-          user={selectedUser}
           isOpen={isProfileDialogOpen}
+          user={user}
           onClose={() => setIsProfileDialogOpen(false)}
         />
-      )} </>
-
-  )}
+      )}
+    </>
+  );
+}

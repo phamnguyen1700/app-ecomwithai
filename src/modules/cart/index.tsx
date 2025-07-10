@@ -1,8 +1,12 @@
-'use client'
+"use client";
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/hooks/formatMoney";
 import React from "react";
-import { useCartQuery, useUpdateQuantityMutation, useRemoveCartItemMutation } from "@/tanstack/cart";
+import {
+    useCartQuery,
+    useUpdateQuantityMutation,
+    useRemoveCartItemMutation,
+} from "@/tanstack/cart";
 import Image from "next/image";
 import Icon from "@/components/assests/icons";
 
@@ -40,7 +44,7 @@ export default function Cart() {
                         image,
                         skuName,
                         quantity,
-                        priceSnapshot
+                        priceSnapshot,
                     } = item;
                     return (
                         <div
@@ -49,16 +53,31 @@ export default function Cart() {
                         >
                             <div className="flex items-center gap-4 flex-1">
                                 <div className="w-16 h-16 relative">
-                                    <Image src={image || '/assets/blank.png'} alt={skuName} fill className="object-cover rounded" />
+                                    <Image
+                                        src={image || "/assets/blank.png"}
+                                        alt={skuName}
+                                        fill
+                                        className="object-cover rounded"
+                                    />
                                 </div>
                                 <div>
-                                    <div className="font-medium text-sm line-clamp-1">{skuName}</div>
-                                    <div className="text-xs text-gray-500 mt-1">Đơn giá: {formatMoney(priceSnapshot)}</div>
+                                    <div className="font-medium text-sm line-clamp-1">
+                                        {skuName}
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-1">
+                                        Đơn giá: {formatMoney(priceSnapshot)}
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Button
-                                    onClick={() => updateCartMutation.mutate({ skuId, productId, quantity: Math.max(1, quantity - 1) })}
+                                    onClick={() =>
+                                        updateCartMutation.mutate({
+                                            skuId,
+                                            productId,
+                                            quantity: Math.max(1, quantity - 1),
+                                        })
+                                    }
                                     className="w-8 h-8 border rounded"
                                     disabled={quantity <= 1}
                                 >
@@ -68,7 +87,13 @@ export default function Cart() {
                                     {quantity}
                                 </span>
                                 <Button
-                                    onClick={() => updateCartMutation.mutate({ skuId, productId, quantity: quantity + 1 })}
+                                    onClick={() =>
+                                        updateCartMutation.mutate({
+                                            skuId,
+                                            productId,
+                                            quantity: quantity + 1,
+                                        })
+                                    }
                                     className="w-8 h-8 border rounded"
                                 >
                                     +
@@ -78,12 +103,20 @@ export default function Cart() {
                                 {formatMoney(priceSnapshot * quantity)}
                             </div>
                             <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => removeCartItemMutation.mutate({ skuId, productId })}
-                                >
-                                    <Icon name="trash" className="w-4 h-4 text-red-500" />
-                                </Button>
+                                variant="ghost"
+                                size="icon"
+                                onClick={() =>
+                                    removeCartItemMutation.mutate({
+                                        skuId,
+                                        productId,
+                                    })
+                                }
+                            >
+                                <Icon
+                                    name="trash"
+                                    className="w-4 h-4 text-red-500"
+                                />
+                            </Button>
                         </div>
                     );
                 })}
@@ -91,9 +124,13 @@ export default function Cart() {
 
             <div className="flex justify-end pt-6 border-t">
                 <div className="text-lg font-semibold">
-                    Tổng cộng: {formatMoney(
+                    Tổng cộng:{" "}
+                    {formatMoney(
                         cartItems.reduce(
-                            (sum: number, item: any) => sum + (item.priceSnapshot || 0) * (item.quantity || 0),
+                            (sum: number, item: any) =>
+                                sum +
+                                (item.priceSnapshot || 0) *
+                                    (item.quantity || 0),
                             0
                         )
                     )}
