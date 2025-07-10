@@ -1,5 +1,5 @@
 import { get } from "@/util/Http";
-import { getOrderDetail } from "@/zustand/services/order";
+import { getAllDelivery, getDeliveryDetail, getOrderDetail } from "@/zustand/services/order";
 import { useQuery } from "@tanstack/react-query";
 
 export const useAllOrder = (params: Record<string, any> = {}) => {
@@ -38,3 +38,22 @@ export const useAnalytics = () => {
         },
     });
 };
+
+export const useDeliveries = (params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+}) => {
+    return useQuery({
+        queryKey: ["deliveries", params],
+        queryFn: () => getAllDelivery(params),
+    });
+};
+
+export const useDeliveryDetail = (id?: string) =>
+    useQuery({
+        queryKey: ["delivery-detail", id],
+        queryFn: () => getDeliveryDetail(id!),
+        enabled: !!id,
+    });
