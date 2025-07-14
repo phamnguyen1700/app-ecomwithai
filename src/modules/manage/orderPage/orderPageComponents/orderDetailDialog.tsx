@@ -15,6 +15,7 @@ import {
   PAYMENT_STATUS_LABELS,
   PAYMENT_METHOD_LABELS,
 } from "@/constants/label";
+import { useProducts } from "@/tanstack/product";
 import Image from "next/image";
 
 interface OrderDetailDialogProps {
@@ -30,8 +31,12 @@ export default function OrderDetailDialog({
   isOpen,
   onClose,
 }: OrderDetailDialogProps) {
+  const { data: productsData, isLoading: isLoadingProducts } = useProducts();
+  const products = productsData?.data || [];
+  const items = order?.items || [];
+  const user = usersData.find((user: User) => user._id === order?.userId);
+
   if (!order) return null;
-  const user = usersData.find((user: User) => user._id === order.userId);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -95,19 +100,35 @@ export default function OrderDetailDialog({
               </tr>
             </thead>
             <tbody>
-              {order.items && order.items.length > 0 ? order.items.map((item, idx) => {
+              {items.length > 0 ? items.map((item, idx) => {
                 const price = item.priceSnapshot || 0;
                 const discount = item.discountSnapshot || 0;
                 const quantity = item.quantity || 0;
                 const discountedPrice = price * (1 - discount / 100);
                 const lineTotal = discountedPrice * quantity;
+
+                // Tìm sản phẩm theo productId
+                const product = products.find((p) => p._id === item.productId);
+                const productName = product?.name || (isLoadingProducts ? "Đang tải..." : "Không tìm thấy");
+
                 return (
                   <tr key={item.skuId}>
                     <td className="p-2 border text-center">{idx + 1}</td>
-                    <td className="p-2 border">{item.skuName}</td>
+                    <td className="p-2 border">
+                      <div>
+                        <div className="font-medium">{productName}</div>
+                        <div className="text-gray-500 text-xs">{item.skuName}</div>
+                      </div>
+                    </td>
                     <td className="p-2 border text-center">
                       {item.image ? (
-                        <Image src={item.image} alt={item.skuName} className="w-12 h-12 object-contain mx-auto" />
+                        <Image
+                          src={item.image || ""}
+                          alt={item.skuName}
+                          width={48} 
+                          height={48}
+                          className="w-12 h-12 object-contain mx-auto"
+                        />
                       ) : (
                         <span className="text-gray-400">—</span>
                       )}
