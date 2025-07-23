@@ -65,6 +65,11 @@ const navItems = [
         href: "/manage/order",
         icon: <Icon name="listOrdered" size={24} />,
     },
+    {
+        label: "Vận chuyển",
+        href: "/manage/delivery",
+        icon: <Icon name="truck" size={24} />,
+    }
 ];
 
 export default function Sidebar() {

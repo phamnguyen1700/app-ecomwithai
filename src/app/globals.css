@@ -8,6 +8,9 @@
   --primary: #BF6159;
   --secondary: #ffe2df;
   --tertiary: #ff9595;
+  --success: #008000;
+  --warning: #FFA500;
+  --danger: #FF0000;
   --text-color: #5F5A56;
   --light-color: #7F7F7F;
 }
