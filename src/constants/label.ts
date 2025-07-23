@@ -1,7 +1,7 @@
 export const ORDER_STATUS_LABELS: Record<string, string> = {
-  Pending: "Đang xử lý",
+  Pending: "Đang chờ",
   Cancelled: "Đã hủy",
-  Shipped: "Đã gửi hàng",
+  Shipped: "Đang giao",
   Delivered: "Đã giao",
   // ... thêm nếu có trạng thái khác
 };
