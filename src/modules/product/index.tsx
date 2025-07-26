@@ -37,7 +37,7 @@ export default function Product() {
                 loading={isLoading}
                 fields={{
                     name: "name",
-                    img: "imageUrl",
+                    img: "skus",
                     desc: "description",
                 }}
                 col={4}
