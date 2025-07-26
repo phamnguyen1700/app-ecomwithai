@@ -49,7 +49,7 @@ export default function ProductCardInChat({ product }: Props) {
   return (
     <div className="border rounded-md shadow-sm bg-white p-2.5 text-[10px] max-w-[270px] flex gap-2">
       <Image
-        src={selectedSku.images[0] || "/assets/blank.png"}
+        src={selectedSku.images[0] || "/assets/blank.jpg"}
         alt={product.name || "Không tải được tên sản phẩm!"}
         width={40}
         height={40}

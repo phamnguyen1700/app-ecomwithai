@@ -8,19 +8,25 @@ import { AppTypes } from "@/enum/home";
 import { useState } from "react";
 import { routesConfig } from "@/routes/config";
 
-
 export default function Product() {
-    const [filters, setFilters] = useState({});
-    const { data: response, isLoading } = useProducts(filters);
-    const products = Array.isArray(response?.data)
-        ? response.data
-        : [];
+    const [filters, setFilters] = useState<any>({});
+    const { search, ...apiFilters } = filters;
+
+    const { data: response, isLoading } = useProducts(apiFilters); 
+    const rawProducts = Array.isArray(response?.data) ? response.data : [];
+
+    const products = search
+        ? rawProducts.filter((item) =>
+              item.name?.toLowerCase().includes(search.toLowerCase())
+          )
+        : rawProducts;
+
     const handleFilterProduct = (value: any) => {
-        setFilters(value)
-    }
+        setFilters(value);
+    };
     return (
         <div className="mt-10">
-            <AppFilterForm 
+            <AppFilterForm
                 filterItems={Fields()}
                 onSubmit={handleFilterProduct}
                 content={AppTypes.FINDING}

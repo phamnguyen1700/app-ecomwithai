@@ -112,7 +112,7 @@ export default function Cart() {
                                             <span className="text-lg">×</span>
                                         </button>
                                         <div className="w-14 h-14 flex-shrink-0 relative">
-                                            <Image src={image || '/assets/blank.png'} alt={skuName} fill className="object-cover rounded" />
+                                            <Image src={image || '/assets/blank.jpg'} alt={skuName} fill className="object-cover rounded" />
                                         </div>
                                         <div className="flex-1 ml-3 flex flex-col justify-between h-full">
                                             <div className="font-medium text-xs line-clamp-1">{skuName}</div>
