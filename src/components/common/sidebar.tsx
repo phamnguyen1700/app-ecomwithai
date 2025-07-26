@@ -80,7 +80,7 @@ const navItems = [
     },
     {
         label: "Đăng xuất",
-        href: "",
+        href: "/ecom/home",
         icon: <Icon name="logout" size={24} />,
     },
 ];
@@ -94,7 +94,7 @@ export default function Sidebar() {
     const handleLogout = () => {
         logoutState();
         toast.success("Logout thành công!");
-        window.location.reload();
+        router.push(routesConfig.home);
     };
     const renderNav = (isMobile = false) => {
         return navItems.map((item) => {
@@ -150,7 +150,6 @@ export default function Sidebar() {
                     onClick={() => {
                         if (item.label === "Đăng xuất") {
                             handleLogout();
-                            router.push(routesConfig.home);
                         } else {
                             router.push(item.href);
                         }
