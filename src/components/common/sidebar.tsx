@@ -17,6 +17,9 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "../ui/accordion";
+import { useAuthStore } from "@/zustand/store/userAuth";
+import { toast } from "react-toastify";
+import { routesConfig } from "@/routes/config";
 
 const navItems = [
     {
@@ -27,6 +30,11 @@ const navItems = [
     {
         label: "Sản phẩm",
         href: "/manage/product",
+        icon: <Icon name="package" size={24} />,
+    },
+    {
+        label: "Đánh giá",
+        href: "/manage/review",
         icon: <Icon name="package" size={24} />,
     },
     {
@@ -69,13 +77,25 @@ const navItems = [
         label: "Vận chuyển",
         href: "/manage/delivery",
         icon: <Icon name="truck" size={24} />,
-    }
+    },
+    {
+        label: "Đăng xuất",
+        href: "/ecom/home",
+        icon: <Icon name="logout" size={24} />,
+    },
 ];
 
 export default function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
     const [open, setOpen] = useState(false);
+    const logoutState = useAuthStore((state) => state.clearAuth);
+
+    const handleLogout = () => {
+        logoutState();
+        toast.success("Logout thành công!");
+        router.push(routesConfig.home);
+    };
     const renderNav = (isMobile = false) => {
         return navItems.map((item) => {
             const isActive = pathname === item.href;
@@ -128,7 +148,11 @@ export default function Sidebar() {
                 <button
                     key={item.href}
                     onClick={() => {
-                        router.push(item.href);
+                        if (item.label === "Đăng xuất") {
+                            handleLogout();
+                        } else {
+                            router.push(item.href);
+                        }
                         if (isMobile) setOpen(false);
                     }}
                     className={cn(
