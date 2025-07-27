@@ -25,7 +25,7 @@ export default function Product() {
         setFilters(value);
     };
     return (
-        <div className="mt-10">
+        <div className="mt-32">
             <AppFilterForm
                 filterItems={Fields()}
                 onSubmit={handleFilterProduct}

@@ -68,7 +68,7 @@ export default function OrderPage() {
     };
     return (
         <>
-            <div className="p-6">
+            <div className="p-6 mt-24">
                 <h1 className="text-2xl font-bold mb-4">Đơn hàng của tôi</h1>
 
                 {orders.length > 0 ? (
