@@ -6,8 +6,9 @@ export const routesConfig = {
     cart: "/ecom/cart",
     order: "/ecom/order",
     profile: "/ecom/profile_pop_up",
-    settings: "/ecom/settings",
+    refund: "/ecom/refund",
     logout: "/ecom/logout",
+    review: "/ecom/review",
 };
 export const images = {
     logo: "/assets/logo.png",

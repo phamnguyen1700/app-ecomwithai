@@ -53,7 +53,6 @@ export default function OrderPage() {
         queryFn: getMyOrders,
     });
 
-    // --- 2. useMutation also takes an options object, and we type it explicitly ---
     const cancelMutation = useMutation<void, Error, string>({
         mutationFn: cancelOrder,
         onMutate: (orderId: string) => {
@@ -172,7 +171,7 @@ export default function OrderPage() {
                                                 </Button>
 
                                                 {order.orderStatus ===
-                                                    "Shipped" && (
+                                                    "Delivered" && (
                                                     <Button
                                                         size="sm"
                                                         variant="outline"

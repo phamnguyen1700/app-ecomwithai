@@ -23,7 +23,7 @@ export default function Navbar() {
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
 
   const handleProfileClick = () => setIsProfileDialogOpen(true);
-  const handleSettingsClick = () => router.push(routesConfig.settings);
+  const handleSettingsClick = () => router.push(routesConfig.refund);
 
   const userMenu = [
     {
@@ -31,7 +31,7 @@ export default function Navbar() {
       onClick: handleProfileClick,
     },
     {
-      name: "Cài đặt",
+      name: "Yêu cầu hoàn trả",
       onClick: handleSettingsClick,
     },
     {
@@ -64,6 +64,7 @@ export default function Navbar() {
             <li><Link href={routesConfig.products}>Sản Phẩm</Link></li>
             <li><Link href={routesConfig.cart}>Giỏ Hàng</Link></li>
             <li><Link href={routesConfig.order}>My Order</Link></li>
+            <li><Link href={routesConfig.review}>Review</Link></li>
           </ul>
         </div>
 
