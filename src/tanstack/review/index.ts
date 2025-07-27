@@ -25,11 +25,13 @@ export const useDeleteReviewAdmin = () => {
     });
 };
 
-export const useReviewList = (filters: any) => {
+export const useReviewList = (filters?: any) => {
     return useQuery<any>({
         queryKey: ["review", filters],
         queryFn: async () => {
-            const res = await get("/review", { params: filters });
+            const res = await get("/review", {
+                params: filters ?? {},
+            });
             return res.data;
         },
     });
@@ -60,3 +62,17 @@ export const useUpdateReview = () => {
         },
     });
 };
+
+export const useReportReview = () =>
+    useMutation({
+        mutationFn: async ({
+            id,
+            reasons,
+        }: {
+            id: string;
+            reasons: string[];
+        }) => {
+            const res = await post(`/review/${id}/report`, { reasons });
+            return res.data;
+        },
+    });

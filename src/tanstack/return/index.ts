@@ -24,8 +24,8 @@ export const useApproveReturn = () => {
 
 export const useRejectReturn = () => {
     return useMutation({
-        mutationFn: async (id: string) => {
-            const res = await patch(`/return/reject/${id}`);
+        mutationFn: async ({ id, reason }: any) => {
+            const res = await patch(`/return/reject/${id}`, { reason });
             return res.data;
         },
     });

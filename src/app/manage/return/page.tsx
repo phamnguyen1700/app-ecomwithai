@@ -1,6 +1,21 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
+    Dialog,
+    DialogTitle,
+    DialogHeader,
+    DialogContent,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
     useApproveReturn,
     useRejectReturn,
     useReturnAdminAllQuery,
@@ -11,6 +26,8 @@ import React, { useState } from "react";
 const ReturnPage = () => {
     const [page, setPage] = useState(1);
     const limit = 10;
+    const [rejectingId, setRejectingId] = useState<string | null>(null);
+    const [rejectReason, setRejectReason] = useState<string>("not_eligible");
 
     const { data, isLoading, refetch } = useReturnAdminAllQuery({
         page,
@@ -26,8 +43,18 @@ const ReturnPage = () => {
         approve.mutate(id, { onSuccess: () => refetch() });
     };
 
-    const handleReject = (id: string) => {
-        reject.mutate(id, { onSuccess: () => refetch() });
+    const handleRejectConfirm = () => {
+        if (!rejectingId) return;
+        reject.mutate(
+            { id: rejectingId, reason: rejectReason },
+            {
+                onSuccess: () => {
+                    setRejectingId(null);
+                    setRejectReason("not_eligible");
+                    refetch();
+                },
+            }
+        );
     };
 
     return (
@@ -78,15 +105,15 @@ const ReturnPage = () => {
                                     "vi-VN"
                                 )}
                             </p>
-                            {item.images && item.images.length > 0 && (
+                            {item.images?.length > 0 && (
                                 <div className="flex gap-3 mt-2">
                                     {item.images.map(
                                         (url: string, index: number) => (
                                             <Image
-                                                width={60}
-                                                height={60}
                                                 key={index}
                                                 src={url}
+                                                width={60}
+                                                height={60}
                                                 alt={`Ảnh ${index + 1}`}
                                                 className="w-24 h-24 object-cover rounded-md border"
                                             />
@@ -104,7 +131,7 @@ const ReturnPage = () => {
                                     </Button>
                                     <Button
                                         variant="destructive"
-                                        onClick={() => handleReject(item._id)}
+                                        onClick={() => setRejectingId(item._id)}
                                     >
                                         Từ chối
                                     </Button>
@@ -134,6 +161,56 @@ const ReturnPage = () => {
                             Tiếp →
                         </Button>
                     </div>
+
+                    <Dialog
+                        open={rejectingId !== null}
+                        onOpenChange={() => setRejectingId(null)}
+                    >
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Chọn lý do từ chối</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                                <Label>Lý do</Label>
+                                <Select
+                                    value={rejectReason}
+                                    onValueChange={setRejectReason}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Chọn lý do" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="not_eligible">
+                                            Không đủ điều kiện
+                                        </SelectItem>
+                                        <SelectItem value="outside_window">
+                                            Ngoài thời hạn cho phép
+                                        </SelectItem>
+                                        <SelectItem value="insufficient_evidence">
+                                            Thiếu bằng chứng
+                                        </SelectItem>
+                                        <SelectItem value="fraud_suspected">
+                                            Nghi ngờ gian lận
+                                        </SelectItem>
+                                        <SelectItem value="other">
+                                            Khác
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <DialogFooter>
+                                    <Button
+                                        variant="destructive"
+                                        onClick={handleRejectConfirm}
+                                        disabled={reject.isPending}
+                                    >
+                                        {reject.isPending
+                                            ? "Đang gửi..."
+                                            : "Xác nhận từ chối"}
+                                    </Button>
+                                </DialogFooter>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </>
             )}
         </div>
