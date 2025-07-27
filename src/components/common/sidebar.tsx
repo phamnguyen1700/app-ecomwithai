@@ -25,7 +25,7 @@ const navItems = [
     {
         label: "Tổng quan",
         href: "/manage/dashboard",
-        icon: <Icon name="home" size={24} />,
+        icon: <Icon name="dash" size={24} />,
     },
     {
         label: "Sản phẩm",
@@ -83,12 +83,19 @@ const navItems = [
         href: "/manage/delivery",
         icon: <Icon name="truck" size={24} />,
     },
-    {
-        label: "Đăng xuất",
-        href: "/ecom/home",
-        icon: <Icon name="logout" size={24} />,
-    },
 ];
+
+const homeItem = {
+    label: "Trang chủ",
+    href: "/ecom/home",
+    icon: <Icon name="home" size={24} />,
+};
+
+const logoutItem = {
+    label: "Đăng xuất",
+    href: "/ecom/home",
+    icon: <Icon name="logout" size={24} />,
+};
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -102,76 +109,103 @@ export default function Sidebar() {
         router.push(routesConfig.home);
     };
     const renderNav = (isMobile = false) => {
-        return navItems.map((item) => {
-            const isActive = pathname === item.href;
-            const isParentActive = item.children?.some((sub) =>
-                pathname.startsWith(sub.href)
-            );
+        return (
+            <>
+                {navItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    const isParentActive = item.children?.some((sub) =>
+                        pathname.startsWith(sub.href)
+                    );
 
-            if (item.children) {
-                return (
-                    <Accordion
-                        type="single"
-                        collapsible
-                        key={item.label}
-                        defaultValue={isParentActive ? item.label : undefined}
-                    >
-                        <AccordionItem value={item.label}>
-                            <AccordionTrigger className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium">
-                                {item.icon}
-                                {item.label}
-                            </AccordionTrigger>
-                            <AccordionContent className="ml-6 space-y-1">
-                                {item.children.map((sub) => {
-                                    const isSubActive = pathname === sub.href;
-                                    return (
-                                        <button
-                                            key={sub.href}
-                                            onClick={() => {
-                                                router.push(sub.href);
-                                                if (isMobile) setOpen(false);
-                                            }}
-                                            className={cn(
-                                                "w-full flex items-center gap-2 px-3 py-1 rounded-md text-sm",
-                                                isSubActive
-                                                    ? "bg-[color:var(--tertiary)] text-white"
-                                                    : "hover:bg-[color:var(--secondary)]"
-                                            )}
-                                        >
-                                            {sub.icon}
-                                            {sub.label}
-                                        </button>
-                                    );
-                                })}
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                );
-            }
+                    if (item.children) {
+                        return (
+                            <Accordion
+                                type="single"
+                                collapsible
+                                key={item.label}
+                                defaultValue={isParentActive ? item.label : undefined}
+                            >
+                                <AccordionItem value={item.label}>
+                                    <AccordionTrigger className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium">
+                                        {item.icon}
+                                        {item.label}
+                                    </AccordionTrigger>
+                                    <AccordionContent className="ml-6 space-y-1">
+                                        {item.children.map((sub) => {
+                                            const isSubActive = pathname === sub.href;
+                                            return (
+                                                <button
+                                                    key={sub.href}
+                                                    onClick={() => {
+                                                        router.push(sub.href);
+                                                        if (isMobile) setOpen(false);
+                                                    }}
+                                                    className={cn(
+                                                        "w-full flex items-center gap-2 px-3 py-1 rounded-md text-sm",
+                                                        isSubActive
+                                                            ? "bg-[color:var(--tertiary)] text-white"
+                                                            : "hover:bg-[color:var(--secondary)]"
+                                                    )}
+                                                >
+                                                    {sub.icon}
+                                                    {sub.label}
+                                                </button>
+                                            );
+                                        })}
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        );
+                    }
 
-            return (
+                    return (
+                        <button
+                            key={item.href}
+                            onClick={() => {
+                                router.push(item.href);
+                                if (isMobile) setOpen(false);
+                            }}
+                            className={cn(
+                                "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left",
+                                isActive
+                                    ? "bg-[color:var(--tertiary)] text-white"
+                                    : "hover:bg-[color:var(--secondary)]"
+                            )}
+                        >
+                            {item.icon}
+                            {item.label}
+                        </button>
+                    );
+                })}
+                
+                {/* Divider */}
+                <div className="border-t border-gray-300 my-4"></div>
+                
+                {/* Home Button */}
                 <button
-                    key={item.href}
                     onClick={() => {
-                        if (item.label === "Đăng xuất") {
-                            handleLogout();
-                        } else {
-                            router.push(item.href);
-                        }
+                        router.push(homeItem.href);
                         if (isMobile) setOpen(false);
                     }}
-                    className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left",
-                        isActive
-                            ? "bg-[color:var(--tertiary)] text-white"
-                            : "hover:bg-[color:var(--secondary)]"
-                    )}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left hover:bg-blue-100 hover:text-blue-700"
                 >
-                    {item.icon}
-                    {item.label}
+                    {homeItem.icon}
+                    {homeItem.label}
                 </button>
-            );
-        });
+                
+                {/* Logout Button */}
+                <button
+                    onClick={() => {
+                        handleLogout();
+                        if (isMobile) setOpen(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left hover:bg-red-100 hover:text-red-700"
+                >
+                    {logoutItem.icon}
+                    {logoutItem.label}
+                </button>
+            </>
+        );
     };
     return (
         <>

@@ -9,7 +9,7 @@ const LogoutPage = () => {
     
     const handleLogout = () => {
         logoutState();
-        toast.success("Logout thành công!");
+        toast.success("Đã Đăng xuất!");
         window.location.reload();
     };
 
