@@ -1,5 +1,6 @@
 import { get, post } from "@/util/Http";
 import { IAddress } from "@/types/address";
+import { ShippingAddress } from "@/types/delievery";
 
 export const getAddressAPI = async () => {
     const res = await get<IAddress[]>("/address");
@@ -22,3 +23,8 @@ export const addAddressAPI = async (data: {
 export const setDefaultAddressAPI = (id: string) => {
     return post(`/address/${id}/set-default`);
   };
+
+  export const getAllAddress = async (): Promise<ShippingAddress[]> => {
+    const response = await get<ShippingAddress[]>("/address/admin/all");
+    return response.data;
+};

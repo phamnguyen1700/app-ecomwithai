@@ -104,6 +104,7 @@ export interface IProductResponse {
             currentPage?: number;
             limit?: number;
         };
+    meta?: any;
 }
 export interface ProductCardTypes {
     items?: any[];

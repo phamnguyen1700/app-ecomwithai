@@ -16,10 +16,17 @@ import {
     Home,
     Package,
     BarChart,
-    ImagePlus
-  } from "lucide-react";
-  
-  const icons = {
+    ImagePlus,
+    Truck,
+    ShoppingCart,
+    MapPin,
+    BadgePercent,
+    Box,
+    CheckCircle,
+    LogOut,
+} from "lucide-react";
+
+const icons = {
     search: Search,
     user: User,
     shoppingBag: ShoppingBag,
@@ -36,31 +43,42 @@ import {
     home: Home,
     package: Package,
     barChart: BarChart,
-    imagePlus: ImagePlus
-  };
-  
-  interface IconProps extends LucideProps {
+    imagePlus: ImagePlus,
+    truck: Truck,
+    shoppingCart: ShoppingCart,
+    mapPin: MapPin,
+    badgePercent: BadgePercent,
+    box: Box,
+    review: CheckCircle,
+    logout: LogOut,
+};
+
+interface IconProps extends LucideProps {
     name: keyof typeof icons;
-  }
-  
-  export default function Icon({  
+}
+
+export default function Icon({
     name,
     size = 24,
     className,
     color,
     ...props
-  }: IconProps) {
+}: IconProps) {
     const IconComponent = icons[name];
-  
+
     if (!IconComponent) {
-      console.warn(`Icon "${name}" không tồn tại.`);
-      return null;
+        console.warn(`Icon "${name}" không tồn tại.`);
+        return null;
     }
-  
+
     return (
-      <div className="flex items-center justify-center">
-        <IconComponent size={size} className={className} color={color} {...props} />
-      </div>
+        <div className="flex items-center justify-center">
+            <IconComponent
+                size={size}
+                className={className}
+                color={color}
+                {...props}
+            />
+        </div>
     );
-  }
-  
+}

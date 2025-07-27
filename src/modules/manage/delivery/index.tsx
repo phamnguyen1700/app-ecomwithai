@@ -1,0 +1,14 @@
+"use client";
+
+import DeliveryTable from "./deliveryComponent/deliveryTable";
+
+export default function DeliveryPage() {
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-[color:var(--text-color)]">Danh sách đơn giao hàng</h1>
+      </div>
+      <DeliveryTable />
+    </div>
+  );
+}

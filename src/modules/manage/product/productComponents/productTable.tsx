@@ -60,15 +60,16 @@ export default function ProductTable() {
         {
             colName: "Trạng thái",
             render: (product) => (
-                <span
-                    className={`flex justify-center px-2 py-1 text-xs rounded-full ${
-                        product.isActive
-                            ? "bg-green-500 text-white"
-                            : "bg-red-500 text-white"
-                    }`}
-                >
-                    {product.isActive ? "Đang bán" : "Ngừng bán"}
-                </span>
+                <div className="flex justify-center items-center">
+                    <span
+                        className={`inline-block px-5 py-1 text-xs rounded-full font-semibold whitespace-nowrap
+                            ${product.isActive ? "bg-green-500 text-white" : "bg-red-500 text-white"}
+                        `}
+                        style={{ minWidth: 80, textAlign: "center" }}
+                    >
+                        {product.isActive ? "Đang bán" : "Ngừng bán"}
+                    </span>
+                </div>
             ),
         },
     ];

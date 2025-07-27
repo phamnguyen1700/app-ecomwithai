@@ -12,10 +12,17 @@ import {
 } from "@/zustand/services/product/product";
 import { toast } from "react-toastify";
 import { queryClient } from "@/lib/queryClient";
-import { IProductUpdatePayload, ISku, ISkuUpdatePayload, IProductCreatePayload, IProductCreateSkuPayload } from "@//types/product";
+import {
+    IProductUpdatePayload,
+    ISku,
+    ISkuUpdatePayload,
+    IProductCreatePayload,
+    IProductCreateSkuPayload,
+    IProductResponse,
+} from "@//types/product";
 
 export const useProducts = (params: Record<string, any> = {}) => {
-    return useQuery({
+    return useQuery<IProductResponse>({
         queryKey: ["product", params],
         queryFn: () => getAllProducts(params),
         placeholderData: keepPreviousData,
@@ -37,7 +44,9 @@ export const useUploadSkuImages = () => {
         },
         onSuccess: (data, variables) => {
             toast.success("Thêm ảnh thành công");
-            queryClient.invalidateQueries({ queryKey: ["sku", variables.skuId] });
+            queryClient.invalidateQueries({
+                queryKey: ["sku", variables.skuId],
+            });
         },
     });
 };
@@ -56,18 +65,27 @@ export const useDeletedSkuImages = () => {
         },
         onSuccess: (data, variables) => {
             toast.success("Xóa ảnh thành công");
-            queryClient.invalidateQueries({ queryKey: ["sku", variables.skuId] });
+            queryClient.invalidateQueries({
+                queryKey: ["sku", variables.skuId],
+            });
         },
     });
 };
 
 export const useUpdateProductMutation = () => {
     return useMutation({
-        mutationFn: ({ id, payload }: { id: string; payload: IProductUpdatePayload }) =>
-            updateProduct(id, payload),
+        mutationFn: ({
+            id,
+            payload,
+        }: {
+            id: string;
+            payload: IProductUpdatePayload;
+        }) => updateProduct(id, payload),
         onSuccess: (_, variables) => {
             toast.success("Cập nhật sản phẩm thành công");
-            queryClient.invalidateQueries({ queryKey: ["product", variables.id] });
+            queryClient.invalidateQueries({
+                queryKey: ["product", variables.id],
+            });
             queryClient.invalidateQueries({ queryKey: ["product"] });
         },
         onError: () => {
@@ -78,8 +96,13 @@ export const useUpdateProductMutation = () => {
 
 export const useUpdateSkuMutation = () => {
     return useMutation({
-        mutationFn: ({ id, payload }: { id: string; payload: ISkuUpdatePayload }) =>
-            updateSku(id, payload),
+        mutationFn: ({
+            id,
+            payload,
+        }: {
+            id: string;
+            payload: ISkuUpdatePayload;
+        }) => updateSku(id, payload),
         onSuccess: (_, variables) => {
             toast.success("Cập nhật SKU thành công");
             queryClient.invalidateQueries({ queryKey: ["sku", variables.id] });
@@ -105,7 +128,8 @@ export const useCreateProductMutation = () => {
 
 export const useCreateProductSkuMutation = () => {
     return useMutation({
-        mutationFn: (payload: IProductCreateSkuPayload) => createProductSku(payload),
+        mutationFn: (payload: IProductCreateSkuPayload) =>
+            createProductSku(payload),
         onSuccess: () => {
             toast.success("Tạo SKU thành công");
             queryClient.invalidateQueries({ queryKey: ["product"] });
@@ -126,7 +150,7 @@ export const useDeleteProductSkuMutation = () => {
         onError: () => {
             toast.error("Xóa SKU thất bại");
         },
-    }); 
+    });
 };
 
 export const useGetProductDetailMutation = () => {
