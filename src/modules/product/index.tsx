@@ -54,7 +54,7 @@ export default function ProductPage() {
   }, [allProducts, rawValues]);
 
   return (
-    <div className="mt-10">
+    <div className="mt-[120px] ">
       <AppFilterForm
         filterItems={fields}
         onSubmit={handleFilterProduct}
