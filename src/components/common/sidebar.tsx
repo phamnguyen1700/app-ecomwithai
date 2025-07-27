@@ -78,6 +78,11 @@ const navItems = [
         href: "/manage/delivery",
         icon: <Icon name="truck" size={24} />,
     },
+    {
+        label: "Người dùng",
+        href: "/manage/user",
+        icon: <Icon name="user" size={24} />,
+    },
 ];
 
 const homeItem = {
