@@ -1,13 +1,24 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogFooter,
+    DialogTitle,
+    DialogContent,
+    DialogHeader,
+} from "@/components/ui/dialog";
 import { useDeleteReviewAdmin, useReviewAdminQuery } from "@/tanstack/review";
 import { useAllUser } from "@/tanstack/user";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const ReviewPage = () => {
     const [mounted, setMounted] = useState(false);
     const [page, setPage] = useState(1);
-
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [selectedReviewId, setSelectedReviewId] = useState<string | null>(
+        null
+    );
     const limit = 10;
     const { data, isLoading } = useReviewAdminQuery({ page, limit });
     const { data: users = [] } = useAllUser({ limit: 9999 });
@@ -68,21 +79,37 @@ const ReviewPage = () => {
                                         <div className="text-right mt-2">
                                             <Button
                                                 variant="destructive"
-                                                size="sm"
                                                 onClick={() => {
-                                                    if (
-                                                        confirm(
-                                                            "Bạn có chắc chắn muốn xoá đánh giá này?"
-                                                        )
-                                                    ) {
+                                                    if (selectedReviewId) {
                                                         deleteReview(
-                                                            review._id
+                                                            selectedReviewId,
+                                                            {
+                                                                onSuccess:
+                                                                    () => {
+                                                                        toast.success(
+                                                                            "Đã xoá đánh giá thành công!"
+                                                                        );
+                                                                        setOpenDeleteDialog(
+                                                                            false
+                                                                        );
+                                                                        setSelectedReviewId(
+                                                                            null
+                                                                        );
+                                                                    },
+                                                                onError: () => {
+                                                                    toast.error(
+                                                                        "Xoá đánh giá thất bại."
+                                                                    );
+                                                                },
+                                                            }
                                                         );
                                                     }
                                                 }}
                                                 disabled={isDeleting}
                                             >
-                                                Xoá
+                                                {isDeleting
+                                                    ? "Đang xoá..."
+                                                    : "Xoá"}
                                             </Button>
                                         </div>
                                     </div>
@@ -117,6 +144,37 @@ const ReviewPage = () => {
                             Tiếp →
                         </Button>
                     </div>
+                    <Dialog
+                        open={openDeleteDialog}
+                        onOpenChange={setOpenDeleteDialog}
+                    >
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Xác nhận xoá đánh giá</DialogTitle>
+                            </DialogHeader>
+                            <p>Bạn có chắc chắn muốn xoá đánh giá này không?</p>
+                            <DialogFooter className="flex justify-end gap-2">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setOpenDeleteDialog(false)}
+                                >
+                                    Huỷ
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    onClick={() => {
+                                        if (selectedReviewId) {
+                                            deleteReview(selectedReviewId);
+                                            setOpenDeleteDialog(false);
+                                        }
+                                    }}
+                                    disabled={isDeleting}
+                                >
+                                    {isDeleting ? "Đang xoá..." : "Xoá"}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </>
             )}
         </div>

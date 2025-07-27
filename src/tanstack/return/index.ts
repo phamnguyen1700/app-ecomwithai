@@ -15,8 +15,18 @@ export const useReturnAdminAllQuery = ({ page = 1, limit = 10 }) => {
 
 export const useApproveReturn = () => {
     return useMutation({
-        mutationFn: async (id: string) => {
-            const res = await patch(`/return/approve/${id}`);
+        mutationFn: async ({
+            id,
+            body,
+        }: {
+            id: string;
+            body: {
+                orderId: string;
+                reason: string;
+                images: string[];
+            };
+        }) => {
+            const res = await patch(`/return/approve/${id}`, body);
             return res.data;
         },
     });

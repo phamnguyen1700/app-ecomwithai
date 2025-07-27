@@ -22,6 +22,7 @@ import {
 } from "@/tanstack/return";
 import Image from "next/image";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const ReturnPage = () => {
     const [page, setPage] = useState(1);
@@ -39,8 +40,28 @@ const ReturnPage = () => {
     const returns = data?.data ?? [];
     const meta = data?.meta ?? { totalItems: 0, totalPages: 1, currentPage: 1 };
 
-    const handleApprove = (id: string) => {
-        approve.mutate(id, { onSuccess: () => refetch() });
+    const handleApprove = (item: any) => {
+        const { _id, orderId, reason, images } = item;
+
+        approve.mutate(
+            {
+                id: _id,
+                body: {
+                    orderId,
+                    reason,
+                    images,
+                },
+            },
+            {
+                onSuccess: () => {
+                    toast.success("Yêu cầu trả hàng đã được duyệt.");
+                    refetch();
+                },
+                onError: () => {
+                    toast.error("Duyệt yêu cầu thất bại.");
+                },
+            }
+        );
     };
 
     const handleRejectConfirm = () => {
@@ -125,7 +146,7 @@ const ReturnPage = () => {
                                 <div className="flex justify-end gap-3 pt-3">
                                     <Button
                                         variant="outline"
-                                        onClick={() => handleApprove(item._id)}
+                                        onClick={() => handleApprove(item)}
                                     >
                                         Duyệt
                                     </Button>
