@@ -3,7 +3,7 @@
 import CustomTable from "@/components/common/CustomTable";
 import { User } from "@/types/user";
 import { useEffect, useState } from "react";
-import { useAllUser, updateRoleMutation } from "@/tanstack/user";
+import { useAllUser, useUpdateRoleMutation } from "@/tanstack/user";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -42,7 +42,7 @@ export default function UserTable() {
     limit: 1000,
   });
   
-  const updateRoleMutationHook = updateRoleMutation();
+  const updateRoleMutationHook = useUpdateRoleMutation();
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");

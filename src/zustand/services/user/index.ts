@@ -17,7 +17,7 @@ export const updateRole = async (userId: string, role: "admin" | "user") => {
 
 
 //forgot password
-export const forgotPass = async (email: string) => {
+export const forgotPass = async (email: string) => { 
     const response = await post("/user/forgot-password", {
         email,
     });

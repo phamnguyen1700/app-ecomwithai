@@ -9,7 +9,7 @@ export const useAllUser = (params: Record<string, any> = {}) => {
     });
 };
 
-export const updateRoleMutation = () => {
+export const useUpdateRoleMutation = () => {
     return useMutation({
         mutationFn: ({ userId, role }: { userId: string; role: "admin" | "user" }) => updateRole(userId, role),
         onSuccess: () => {
