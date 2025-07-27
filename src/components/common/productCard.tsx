@@ -22,7 +22,7 @@ export default function ProductCard({ product, onCompare }: IProductCardProps) {
   const handleCardClick = () => {
     router.push(`/ecom/product/${product._id}`);
   };
-  const fallbackImage = "/assets/blank.png";
+  const fallbackImage = "/assets/blank.jpg";
 
   const imageUrl =
     product.image?.trim() ||

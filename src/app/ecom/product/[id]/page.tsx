@@ -64,7 +64,7 @@ export default function ProductDetail() {
                 onClick={() => setSelectedImageIdx(idx)}
               >
                 <Image
-                  src={img?.trim() || '/assets/blank.png'}
+                  src={img?.trim() || '/assets/blank.jpg'}
                   alt={selectedSku.variantName}
                   layout="fill"
                   objectFit="cover"

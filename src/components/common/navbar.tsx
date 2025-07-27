@@ -14,6 +14,7 @@ import LoginPage from "@/modules/login";
 import RegisterPage from "@/modules/register";
 import LogoutPage from "@/modules/logout";
 import UserProfileDialog from "@/modules/profile_pop_up/UserProfileDialog";
+import Image from "next/image";
 
 export default function Navbar() {
   const user = useAuthStore((state) => state.user) as User | null;
@@ -44,9 +45,16 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href={routesConfig.home}
-          className="flex-none w-14 text-xl font-bold ml-4"
+          // className="flex-none w-14 text-xl font-bold ml-4"
+          className="flex items-center gap-2 ml-4 font-bold text-xl"
         >
-          LOGO
+          <Image
+            src="/assets/image.png"
+            alt="Logo"
+            width={76}
+            height={76} 
+            className="object-contain rounded-full ml-8"
+          />
         </Link>
 
         {/* Menu */}

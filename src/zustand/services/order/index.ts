@@ -24,11 +24,8 @@ export const cancelOrder = async (orderId: string): Promise<void> => {
 };
 // Cập nhật trạng thái đơn (nếu cần)
 export const updateOrderStatus = async (
-    orderId: string,
-    status: string
+  orderId: string,
+  status: string
 ): Promise<void> => {
-    await get<void>(`/order/${orderId}/status`, {
-        method: "PUT",
-        data: { status },
-    });
+  await put<void>(`/order/${orderId}/status`, { orderStatus: status });
 };
