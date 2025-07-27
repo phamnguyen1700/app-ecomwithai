@@ -127,7 +127,7 @@ export default function OrderDetailDialog({
                 const productName = product?.name || (isLoadingProducts ? "Đang tải..." : "Không tìm thấy");
 
                 return (
-                  <tr key={item.skuId}>
+                  <tr key={`${item.skuId}-${idx}`}>
                     <td className="p-2 border text-center">{idx + 1}</td>
                     <td className="p-2 border">
                       <div>
@@ -255,10 +255,21 @@ export default function OrderDetailDialog({
                       estimatedDeliveryDate: new Date(Date.now() + 3 * 86400000).toISOString(),
                       requiresSignature: false,
                     };
+                    console.log('=== CREATE DELIVERY DATA ===');
+                    console.log('Delivery Data:', deliveryData);
+                    console.log('Address Data:', address);
+                    console.log('Order Data:', order);
+                    
                     createDeliveryMutation.mutate(deliveryData, {
                       onSuccess: async () => {
+                        console.log('=== UPDATE ORDER STATUS DATA ===');
+                        console.log('Update Order Status Data:', { orderId: order._id, orderStatus: 'Shipped' });
+                        
                         await updateOrderStatusMutation.mutate({ orderId: order._id, orderStatus: 'Shipped' }, {
                           onSuccess: () => {
+                            console.log('=== SUCCESS ===');
+                            console.log('Delivery created successfully');
+                            console.log('Order status updated successfully');
                             setConfirmDeliveryVisible(false);
                             setDeliveryModalVisible(false);
                             onClose();
@@ -295,8 +306,14 @@ export default function OrderDetailDialog({
                   className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                   onClick={() => {
                     if (!order) return;
+                    console.log('=== CANCEL ORDER DATA ===');
+                    console.log('Cancel Order Data:', { orderId: order._id, orderStatus: 'Cancelled' });
+                    console.log('Order Data:', order);
+                    
                     updateOrderStatusMutation.mutate({ orderId: order._id, orderStatus: 'Cancelled' }, {
                       onSuccess: () => {
+                        console.log('=== CANCEL SUCCESS ===');
+                        console.log('Order cancelled successfully');
                         setConfirmCancelVisible(false);
                         onClose();
                         if (typeof onDeliverySuccess === 'function') onDeliverySuccess();

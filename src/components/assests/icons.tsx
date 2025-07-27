@@ -24,6 +24,7 @@ import {
     Box,
     CheckCircle,
     LogOut,
+    LayoutDashboard
 } from "lucide-react";
 
 const icons = {
@@ -51,6 +52,7 @@ const icons = {
     box: Box,
     review: CheckCircle,
     logout: LogOut,
+    dash: LayoutDashboard,
 };
 
 interface IconProps extends LucideProps {

@@ -71,7 +71,7 @@ export default function Cart() {
         <Popover>
             <PopoverTrigger asChild>
                 <div className="relative cursor-pointer">
-                    <Icon name="shoppingBag" size={24} />
+                    <Icon name="shoppingBag" size={30} className="text-gray-800" />
                     {cartCount > 0 && (
                         <Badge
                             variant="destructive"
