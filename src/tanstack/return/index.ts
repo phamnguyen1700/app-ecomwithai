@@ -1,4 +1,4 @@
-import { get, patch } from "@/util/Http";
+import { get, patch, post } from "@/util/Http";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useReturnAdminAllQuery = ({ page = 1, limit = 10 }) => {
@@ -26,6 +26,21 @@ export const useRejectReturn = () => {
     return useMutation({
         mutationFn: async (id: string) => {
             const res = await patch(`/return/reject/${id}`);
+            return res.data;
+        },
+    });
+};
+
+interface CreateReturnRequestInput {
+    orderId: string;
+    reason: string;
+    images: string[];
+}
+
+export const useCreateReturnRequest = () => {
+    return useMutation({
+        mutationFn: async (data: CreateReturnRequestInput) => {
+            const res = await post("/return/request", data);
             return res.data;
         },
     });
