@@ -256,11 +256,15 @@ export default function OrderDetailDialog({
                       requiresSignature: false,
                     };
                     createDeliveryMutation.mutate(deliveryData, {
-                      onSuccess: () => {
-                        setConfirmDeliveryVisible(false);
-                        setDeliveryModalVisible(false);
-                        onClose();
-                        if (typeof onDeliverySuccess === 'function') onDeliverySuccess();
+                      onSuccess: async () => {
+                        await updateOrderStatusMutation.mutate({ orderId: order._id, orderStatus: 'Shipped' }, {
+                          onSuccess: () => {
+                            setConfirmDeliveryVisible(false);
+                            setDeliveryModalVisible(false);
+                            onClose();
+                            if (typeof onDeliverySuccess === 'function') onDeliverySuccess();
+                          }
+                        });
                       }
                     });
                   }}
