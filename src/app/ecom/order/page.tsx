@@ -13,19 +13,33 @@ import { Button } from "@/components/ui/button";
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { formatDateToDisplay } from "@/hooks/formatDateToDisplay";
 import OrderDetailDialog from "@/app/ecom/order/OrderDetailDialog";
-import { Dialog, DialogTitle, DialogHeader, DialogContent, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogTitle,
+    DialogHeader,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
 import { AlertTriangle } from "lucide-react";
+import ReturnRequestDialog from "@/components/common/ReturnModa";
 
 export default function OrderPage() {
     const queryClient = useQueryClient();
     const [updatingId, setUpdatingId] = useState<string | null>(null);
-
     // --- 1. useQuery now takes a single options object ---
     const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [orderToCancel, setOrderToCancel] = useState<IOrder | null>(null);
     const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
+    const [openReturnDialog, setOpenReturnDialog] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState("");
+
+    const handleOpenReturnDialog = (orderId: string) => {
+        setSelectedOrderId(orderId);
+        setOpenReturnDialog(true);
+    };
     const handleShowDetail = (order: IOrder) => {
         setSelectedOrder(order);
         setIsDialogOpen(true);
@@ -39,7 +53,6 @@ export default function OrderPage() {
         queryFn: getMyOrders,
     });
 
-    // --- 2. useMutation also takes an options object, and we type it explicitly ---
     const cancelMutation = useMutation<void, Error, string>({
         mutationFn: cancelOrder,
         onMutate: (orderId: string) => {
@@ -86,7 +99,6 @@ export default function OrderPage() {
                             </thead>
                             <tbody>
                                 {orders.map((order: IOrder) => {
-                                    // --- 3. Map orderStatus vào variant hợp lệ của BadgeProps ---
                                     let variant: BadgeProps["variant"] =
                                         "default";
                                     if (order.orderStatus === "Cancelled")
@@ -148,6 +160,7 @@ export default function OrderPage() {
                                                             : "Hủy"}
                                                     </Button>
                                                 )}
+
                                                 <Button
                                                     size="sm"
                                                     onClick={() =>
@@ -156,6 +169,21 @@ export default function OrderPage() {
                                                 >
                                                     Chi tiết
                                                 </Button>
+
+                                                {order.orderStatus ===
+                                                    "Delivered" && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() =>
+                                                            handleOpenReturnDialog(
+                                                                order._id
+                                                            )
+                                                        }
+                                                    >
+                                                        Yêu cầu trả hàng
+                                                    </Button>
+                                                )}
                                             </td>
                                         </tr>
                                     );
@@ -170,6 +198,11 @@ export default function OrderPage() {
                     order={selectedOrder}
                     isOpen={isDialogOpen}
                     onClose={() => setIsDialogOpen(false)}
+                />
+                <ReturnRequestDialog
+                    open={openReturnDialog}
+                    onClose={() => setOpenReturnDialog(false)}
+                    orderId={selectedOrderId}
                 />
             </div>
             <Dialog
