@@ -24,7 +24,8 @@ import {
     Box,
     CheckCircle,
     LogOut,
-    LayoutDashboard
+    ArrowBigLeft,
+    LayoutDashboard,
 } from "lucide-react";
 
 const icons = {
@@ -52,6 +53,7 @@ const icons = {
     box: Box,
     review: CheckCircle,
     logout: LogOut,
+    return: ArrowBigLeft,
     dash: LayoutDashboard,
 };
 

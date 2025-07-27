@@ -1,9 +1,34 @@
 import { IOrderResponse, OrderAnalytics, OrderDetail } from "@/types/order";
 import { get } from "@/util/Http";
-import { cancelOrder, getOrderDetail, updateOrderStatus } from "@/zustand/services/order";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+    cancelOrder,
+    getOrderDetail,
+    updateOrderStatus,
+} from "@/zustand/services/order";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-
+export const useAllOrderUser = ({
+    page = 1,
+    limit = 10,
+    status,
+    email,
+}: any) => {
+    return useQuery<any>({
+        queryKey: ["orders", page, limit, status, email],
+        queryFn: async () => {
+            const res = await get("/order/me/all", {
+                params: {
+                    page,
+                    limit,
+                    status,
+                    email,
+                },
+            });
+            return res.data;
+        },
+        placeholderData: keepPreviousData,
+    });
+};
 export const useAllOrder = (params: Record<string, any> = {}) => {
     const { email, status, page = 1, limit = 10 } = params;
 
@@ -42,14 +67,19 @@ export const useAnalytics = () => {
     });
 };
 
-
 export const useUpdateOrderStatusMutation = () => {
     return useMutation({
-        mutationFn: async ({ orderId, orderStatus }: { orderId: string; orderStatus: string }) => {
+        mutationFn: async ({
+            orderId,
+            orderStatus,
+        }: {
+            orderId: string;
+            orderStatus: string;
+        }) => {
             return await updateOrderStatus(orderId, orderStatus);
         },
         onSuccess: (_data, variables) => {
-            if (variables.orderStatus === 'Cancelled') {
+            if (variables.orderStatus === "Cancelled") {
                 toast.success("Đơn hàng đã bị hủy");
             } else {
                 toast.success("Cập nhật trạng thái đơn hàng thành công");
@@ -57,7 +87,7 @@ export const useUpdateOrderStatusMutation = () => {
         },
         onError: (error: any) => {
             toast.error(error.message);
-        }
+        },
     });
 };
 
@@ -71,6 +101,6 @@ export const useCancelOrderMutation = () => {
         },
         onError: (error: any) => {
             toast.error(error.message);
-        }
+        },
     });
 };

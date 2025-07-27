@@ -33,6 +33,11 @@ const navItems = [
         icon: <Icon name="package" size={24} />,
     },
     {
+        label: "Yêu cầu trả hàng",
+        href: "/manage/return",
+        icon: <Icon name="return" size={24} />,
+    },
+    {
         label: "Đánh giá",
         href: "/manage/review",
         icon: <Icon name="package" size={24} />,

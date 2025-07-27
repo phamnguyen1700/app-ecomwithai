@@ -23,10 +23,11 @@ export default function Navbar() {
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
 
   const handleProfileClick = () => setIsProfileDialogOpen(true);
+  // const handleSettingsClick = () => router.push(routesConfig.refund);
   const handleLogout = () => {
     useAuthStore.getState().clearAuth();
     toast.success("Đã Đăng xuất!");
-    window.location.reload();
+    router.push(routesConfig.home)
   };
 
   const userMenu = [
@@ -39,6 +40,8 @@ export default function Navbar() {
       onClick: () => router.push("/manage/dashboard"),
     }] : []),
     {
+      // name: "Yêu cầu hoàn trả",
+      // onClick: handleSettingsClick,
       name: "divider",
       onClick: () => {},
     },
@@ -71,6 +74,7 @@ export default function Navbar() {
             <li><Link href={routesConfig.home}>Trang Chủ</Link></li>
             <li><Link href={routesConfig.products}>Sản Phẩm</Link></li>
             <li><Link href={routesConfig.cart}>Giỏ Hàng</Link></li>
+            <li><Link href={routesConfig.review}>Đánh giá</Link></li>
             <li><Link href={routesConfig.order}>Đơn Hàng</Link></li>
           </ul>
         </div>

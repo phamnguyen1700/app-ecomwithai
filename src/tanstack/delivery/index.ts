@@ -20,6 +20,23 @@ export const useDeliveries = (params: {
     });
 };
 
+export const useDeliveriesCustomer = (params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+}) => {
+    return useQuery<any>({
+        queryKey: ["deliveries", params],
+        queryFn: async () => {
+            const res = await get<DeliveryListResponse>("/delivery/customer", {
+                params,
+            });
+            return res.data;
+        },
+    });
+};
+
 export const useDeliveryDetail = (id?: string) =>
     useQuery<DeliveryDetail>({
         queryKey: ["delivery-detail", id],

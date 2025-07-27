@@ -41,6 +41,8 @@ export default function OrderTable() {
         limit: 1000,
     });
     const orders = allOrderQuery.data;
+    console.log('orders = ',orders);
+    
     const { data: users } = useAllUser({
         page: 1,
         limit: 1000,
