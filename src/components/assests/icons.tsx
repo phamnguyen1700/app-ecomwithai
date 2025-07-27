@@ -24,6 +24,7 @@ import {
     Box,
     CheckCircle,
     LogOut,
+    ArrowBigLeft,
 } from "lucide-react";
 
 const icons = {
@@ -51,6 +52,7 @@ const icons = {
     box: Box,
     review: CheckCircle,
     logout: LogOut,
+    return: ArrowBigLeft,
 };
 
 interface IconProps extends LucideProps {
