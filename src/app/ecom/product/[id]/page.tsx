@@ -286,7 +286,7 @@ export default function ProductDetail() {
                                 </div>
                             )}
 
-                            {review.userId !== currentUserId && (
+                            {review.userId._id !== currentUserId && (
                                 <button
                                     className="text-red-500 underline text-sm"
                                     onClick={() => {
