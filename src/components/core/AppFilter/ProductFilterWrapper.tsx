@@ -5,14 +5,16 @@ import { useProducts, useReturnedSkus } from '@/tanstack/product';
 interface ProductFilterWrapperProps {
     onFilterChange: (filters: any) => void;
     onDataChange: (data: any) => void;
+    initialFilters?: any;
 }
 
 const ProductFilterWrapper: React.FC<ProductFilterWrapperProps> = ({
     onFilterChange,
     onDataChange,
+    initialFilters = {},
 }) => {
     const [productType, setProductType] = useState<'new' | 'returned'>('new');
-    const [filters, setFilters] = useState<any>({});
+    const [filters, setFilters] = useState<any>(initialFilters);
 
     // Sử dụng hook tương ứng với loại hàng
     const productsQuery = useProducts(productType === 'new' ? filters : {});
@@ -44,6 +46,7 @@ const ProductFilterWrapper: React.FC<ProductFilterWrapperProps> = ({
             onSubmit={handleFilter}
             onProductTypeChange={handleProductTypeChange}
             showAdvancedFilters={true}
+            initialFilters={initialFilters}
         />
     );
 };

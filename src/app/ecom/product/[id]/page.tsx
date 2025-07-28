@@ -176,12 +176,6 @@ export default function ProductDetail() {
                             </span>
                         )}
                     </div>
-                    {/* Mô tả ngắn */}
-                    <p className="text-[16px] text-[#2d2d2d]">
-                        Lorem Ipsum Dolor Sit Amet, Consectetur
-                        <br />
-                        Adipisicing Elit.
-                    </p>
                     {/* Thông tin */}
                     <div className="space-y-1 text-[15px]">
                         <p>
@@ -264,7 +258,12 @@ export default function ProductDetail() {
 
             <div className="mt-8">
                 <h3 className="text-lg font-semibold mb-4">Đánh giá:</h3>
-                {showAlreadyReviewedMessage ? (
+                {!user ? (
+                    <div className="text-center py-8">
+                        <div className="text-4xl mb-2">🔒</div>
+                        <p className="text-gray-600">Vui lòng đăng nhập để xem đánh giá về sản phẩm này</p>
+                    </div>
+                ) : showAlreadyReviewedMessage ? (
                     <div className="text-center py-8">
                         <div className="text-4xl mb-2">✅</div>
                         <p className="text-gray-600">Bạn đã đánh giá sản phẩm này rồi</p>

@@ -2,12 +2,36 @@
 
 import AppItems from "@/components/core/AppItems";
 import ProductFilterWrapper from "@/components/core/AppFilter/ProductFilterWrapper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { routesConfig } from "@/routes/config";
+import { useSearchParams } from "next/navigation";
 
 export default function Product() {
     const [products, setProducts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [initialFilters, setInitialFilters] = useState<any>({});
+    const searchParams = useSearchParams();
+
+    // Đọc filter từ URL khi component mount
+    useEffect(() => {
+        const filters: any = {};
+        const suitableForSkinTypes = searchParams.get('suitableForSkinTypes');
+        const skinConcerns = searchParams.get('skinConcerns');
+        
+        if (suitableForSkinTypes) {
+            filters.suitableForSkinTypes = suitableForSkinTypes;
+        }
+        if (skinConcerns) {
+            filters.skinConcerns = skinConcerns;
+        }
+        
+        console.log('URL Search Params:', { suitableForSkinTypes, skinConcerns });
+        console.log('Initial Filters:', filters);
+        
+        if (Object.keys(filters).length > 0) {
+            setInitialFilters(filters);
+        }
+    }, [searchParams]);
 
     const handleFilterChange = (filters: any) => {
         console.log('Filters changed:', filters);
@@ -30,6 +54,7 @@ export default function Product() {
                 <ProductFilterWrapper
                     onFilterChange={handleFilterChange}
                     onDataChange={handleDataChange}
+                    initialFilters={initialFilters}
                 />
                 
                 <AppItems

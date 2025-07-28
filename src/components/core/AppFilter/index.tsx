@@ -13,22 +13,47 @@ interface AppFilterFormProps {
     col?: number;
     showAdvancedFilters?: boolean;
     onProductTypeChange?: (type: 'new' | 'returned') => void;
+    initialFilters?: any;
 }
 
 const AppFilterForm = ({
     onSubmit = () => { },
     showAdvancedFilters = true,
     onProductTypeChange,
+    initialFilters = {},
 }: AppFilterFormProps) => {
-    const [formValues, setFormValues] = useState<any>({});
+    const [formValues, setFormValues] = useState<any>(initialFilters);
     const [productType, setProductType] = useState<'new' | 'returned'>('new');
     const [brands, setBrands] = useState<string[]>([]);
     const [ingredients, setIngredients] = useState<string[]>([]);
     const [skinConcerns, setSkinConcerns] = useState<string[]>([]);
     const [suitableForSkinTypes, setSuitableForSkinTypes] = useState<string[]>([]);
+    // const [skinTypes, setSkinTypes] = useState<string[]>([]);
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
 
-    // Lấy tất cả sản phẩm để extract các giá trị unique
+    // Mapping cho các giá trị tiếng Việt
+    const skinTypeMapping: { [key: string]: string } = {
+        'normal': 'Da thường',
+        'dry': 'Da khô',
+        'oily': 'Da dầu',
+        'combination': 'Da hỗn hợp',
+        'sensitive': 'Da nhạy cảm',
+        'acne-prone': 'Da dễ mụn'
+    };
+
+    const skinConcernMapping: { [key: string]: string } = {
+        'acne': 'Mụn',
+        'dullness': 'Da xỉn màu',
+        'blackheads': 'Mụn đầu đen',
+        'dryness': 'Da khô',
+        'irritation': 'Kích ứng',
+        'redness': 'Đỏ da',
+        'sensitive': 'Da nhạy cảm',
+        'aging': 'Lão hóa',
+        'pigmentation': 'Tăng sắc tố',
+        'uneven': 'Da không đều màu'
+    };
+
     const { data: productsData } = useProducts({ page: 1, limit: 1000 });
 
     useEffect(() => {
@@ -70,21 +95,40 @@ const AppFilterForm = ({
         }
     }, [productsData]);
 
+    // Cập nhật formValues khi initialFilters thay đổi
+    useEffect(() => {
+        if (Object.keys(initialFilters).length > 0) {
+            setFormValues(initialFilters);
+            // Tự động submit filter khi có initialFilters
+            onSubmit(initialFilters);
+        }
+    }, [initialFilters, onSubmit]);
+
     const handleChange = (nameOrValue: string | undefined, value?: any) => {
         if (typeof nameOrValue === "undefined") {
             setFormValues(() => value);
         } else {
-            setFormValues((prev: any) => ({ ...prev, [nameOrValue]: value }));
+            setFormValues((prev: any) => {
+                const newValues = { ...prev };
+                if (value === "all") {
+                    // Xóa giá trị khi chọn "Tất cả"
+                    delete newValues[nameOrValue];
+                } else {
+                    // Thêm hoặc cập nhật giá trị
+                    newValues[nameOrValue] = value;
+                }
+                return newValues;
+            });
         }
     };
 
     const handleFilter = () => {
         if (onSubmit) {
-            // Filter out "all" values and empty values
+            // Filter out empty values
             const filteredValues = Object.fromEntries(
                 Object.entries(formValues).filter(([value]) =>
-                    value !== "all" && value !== "" && value !== undefined && value !== null
-                )
+                    value !== "" && value !== undefined && value !== null
+                )   
             );
             onSubmit(filteredValues);
         }
@@ -127,7 +171,7 @@ const AppFilterForm = ({
                                         <SelectItem value="all">Tất cả</SelectItem>
                                         {suitableForSkinTypes.map((skinType) => (
                                             <SelectItem key={skinType} value={skinType}>
-                                                {skinType}
+                                                {skinTypeMapping[skinType] || skinType}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -178,7 +222,7 @@ const AppFilterForm = ({
                                         <SelectItem value="all">Tất cả</SelectItem>
                                         {skinConcerns.map((concern) => (
                                             <SelectItem key={concern} value={concern}>
-                                                {concern}
+                                                {skinConcernMapping[concern] || concern}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
