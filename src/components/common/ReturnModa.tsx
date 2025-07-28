@@ -79,6 +79,11 @@ const ReturnRequestDialog: React.FC<ReturnRequestDialogProps> = ({
             return;
         }
 
+        if (imageUrls.length === 0) {
+            toast.error("Vui lòng tải lên ít nhất một hình ảnh.");
+            return;
+        }
+
         createReturnRequest(
             {
                 orderId,
@@ -110,12 +115,21 @@ const ReturnRequestDialog: React.FC<ReturnRequestDialogProps> = ({
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                 />
-                <Input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleUploadImage}
-                />
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">
+                        Hình ảnh <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleUploadImage}
+                        className="cursor-pointer"
+                    />
+                    <p className="text-xs text-gray-500">
+                        Vui lòng tải lên ít nhất một hình ảnh để chứng minh tình trạng sản phẩm
+                    </p>
+                </div>
 
                 {imageUrls.length > 0 && (
                     <div className="flex gap-2 flex-wrap">
@@ -139,7 +153,11 @@ const ReturnRequestDialog: React.FC<ReturnRequestDialogProps> = ({
                     >
                         Huỷ
                     </Button>
-                    <Button onClick={handleSubmit} disabled={isPending}>
+                    <Button 
+                        onClick={handleSubmit} 
+                        disabled={isPending || imageUrls.length === 0}
+                        className={imageUrls.length === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                    >
                         {isPending ? "Đang gửi..." : "Gửi yêu cầu"}
                     </Button>
                 </DialogFooter>

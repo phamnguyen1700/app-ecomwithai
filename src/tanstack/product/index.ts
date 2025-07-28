@@ -9,6 +9,7 @@ import {
     createProduct,
     createProductSku,
     deleteProductSku,
+    getReturnedSkus,
 } from "@/zustand/services/product/product";
 import { toast } from "react-toastify";
 import { queryClient } from "@/lib/queryClient";
@@ -28,6 +29,14 @@ export const useProducts = (params: Record<string, any> = {}) => {
         placeholderData: keepPreviousData,
     });
 };
+
+export const useReturnedSkus = (params?: any) => {
+    return useQuery({
+        queryKey: ["returned-skus", params],
+        queryFn: () => getReturnedSkus(params),
+    });
+};
+
 export const useProductDetail = (id: string) => {
     return useQuery({
         queryKey: ["product", id],

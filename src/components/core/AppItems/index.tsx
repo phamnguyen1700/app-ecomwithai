@@ -32,7 +32,7 @@ const AppItems = ({
                     return (
                         <div
                             key={index}
-                            className="border rounded-md shadow-sm p-4 space-y-2"
+                            className="border rounded-md shadow-md overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300"
                             onClick={() => {
                                 if (path) {
                                     router.push(`${path}/${item._id}`);
@@ -46,14 +46,39 @@ const AppItems = ({
                                 alt={"alt"}
                                 className="w-full h-32 object-cover rounded"
                             />
+                            <div className="p-4">
                             <h3 className="font-semibold text-sm truncate">
                                 {item[fields?.name]}
                             </h3>
                             <p className="text-gray-500 text-xs truncate">
                                 {item[fields?.desc]}
                             </p>
-                            <div className="text-red-500 font-bold text-sm">
-                                {item[fields?.price]}
+                            <div className="text-red-500 font-semibold text-sm text-right">
+                                {(() => {
+                                    if (item[fields?.price]) {
+                                        return item[fields?.price];
+                                    }
+                                    
+                                    if (item.skus && item.skus.length > 0) {
+                                        const prices = item.skus
+                                            .map((sku: any) => sku.price || 0)
+                                            .filter((price: number) => price > 0);
+                                        
+                                        if (prices.length > 0) {
+                                            const minPrice = Math.min(...prices);
+                                            const maxPrice = Math.max(...prices);
+                                            
+                                            if (minPrice === maxPrice) {
+                                                return `${minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ₫`;
+                                            } else {
+                                                return `${minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} - ${maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ₫`;
+                                            }
+                                        }
+                                    }
+                                    
+                                    return '—';
+                                })()}
+                            </div>
                             </div>
                         </div>
                     );

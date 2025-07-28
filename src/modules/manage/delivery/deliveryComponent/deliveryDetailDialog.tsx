@@ -158,6 +158,33 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({ delivery, o
                         {updateOrderStatusMutation.isPending ? 'Đang hủy...' : 'Hủy đơn hàng'}
                     </button>
                 )}
+                {delivery.status === 'delivered' && (
+                    <button
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl text-lg transition"
+                        disabled={updateOrderStatusMutation.isPending}
+                        onClick={() => {
+                            updateOrderStatusMutation.mutate(
+                                { orderId: delivery.orderId, orderStatus: 'Delivered' },
+                                {
+                                    onSuccess: () => {
+                                        onClose();
+                                        queryClient.invalidateQueries({ queryKey: ["deliveries"] });
+                                        queryClient.invalidateQueries({ queryKey: ["orders"] });
+                                    },
+                                    onError: (error) => {
+                                        console.error('[DEBUG] Lỗi xác nhận hoàn thành đơn hàng:', error);
+                                        if (error?.response) {
+                                            console.error('[DEBUG] Response status:', error.response.status);
+                                            console.error('[DEBUG] Response data:', error.response.data);
+                                        }
+                                    }
+                                }
+                            );
+                        }}
+                    >
+                        {updateOrderStatusMutation.isPending ? 'Đang hoàn thành...' : 'Hoàn thành đơn hàng'}
+                    </button>
+                )}
                   </>
                 )}
             </DialogContent>

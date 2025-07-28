@@ -165,7 +165,7 @@ export default function DeliveryTable() {
         return (
           <Badge variant={variant} className="w-full justify-center whitespace-nowrap">
             {DELIVERY_STATUS_LABELS[delivery.status] || delivery.status}
-          </Badge>
+          </Badge>  
         );
       },
     },

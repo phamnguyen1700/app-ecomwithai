@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useProductDetail } from "@/tanstack/product";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -14,22 +14,51 @@ import { Dialog, DialogHeader, DialogContent, DialogTitle, DialogFooter } from "
 import { toast } from "react-toastify";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { IReview } from "@/types/review";
+import ReviewCard from "@/modules/review/reviewComponents/ReviewCard";
+import { useQueryClient } from "@tanstack/react-query";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function ProductDetail() {
     const { id } = useParams();
+    const searchParams = useSearchParams();
+    const queryClient = useQueryClient();
     const { data: product, isLoading, error } = useProductDetail(id as string);
     const [quantity, setQuantity] = useState(1);
     const [selectedSku, setSelectedSku] = useState<ISku | null>(null);
     const [selectedImageIdx, setSelectedImageIdx] = useState(0);
     const [openReport, setOpenReport] = useState(false);
-    const [selectedReviewId, setSelectedReviewId] = useState<string>("");
+
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+    const [currentReviewPage, setCurrentReviewPage] = useState(1);
     const { user } = useAuthStore();
     const currentUserId = user?._id;
 
-    const { data: reviews = [] } = useReviewList({ productId: id });
-    console.log(reviews);
+    const { data: reviewsResponse } = useReviewList();
+    const allReviews = reviewsResponse || [];
     const reportReview = useReportReview();
+
+    // Filter reviews by current product ID
+    const reviews = (allReviews as IReview[]).filter((review: IReview) => 
+        review.productId === id
+    );
+
+    // Review pagination logic
+    const reviewsPerPage = 3;
+    const totalReviewPages = Math.ceil(reviews.length / reviewsPerPage);
+    const startReviewIndex = (currentReviewPage - 1) * reviewsPerPage;
+    const endReviewIndex = startReviewIndex + reviewsPerPage;
+    const currentReviews = reviews.slice(startReviewIndex, endReviewIndex);
+
+    const userHasReviewed = reviews.some((review: IReview) => 
+        review.userId._id === currentUserId
+    );
+
+    const isReviewMode = searchParams.get('review') === 'true';
+    const orderId = searchParams.get('orderId');
+    const deliveryId = searchParams.get('deliveryId');
+
+    const showAlreadyReviewedMessage = userHasReviewed && isReviewMode;
     useEffect(() => {
         if (product?.skus?.length) {
             setSelectedSku(product.skus[0]);
@@ -230,90 +259,87 @@ export default function ProductDetail() {
                             <HeartIcon />
                         </div>
                     </div>
-                    {/* Delivery & Returns */}
-                    <div className="pt-4 border-t border-[#000000] space-y-2">
-                        <p className="font-semibold text-[15px]">
-                            Delivery & Returns
-                        </p>
-                        <p className="text-[14px] text-gray-700 leading-[24px]">
-                            Sed do eiusmod tempor incididunt ut labore et dolore
-                            magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation ullamco laboris nisi ut aliquip ex ea
-                            commodo consequat.
-                        </p>
-                        <a
-                            href="#"
-                            className="text-[15px] underline hover:text-blue-600 font-medium"
-                        >
-                            Our Return Policy
-                        </a>
-                    </div>
                 </div>
             </div>
+
             <div className="mt-8">
-                <h3 className="text-lg font-semibold mb-2">Customer Reviews</h3>
-                {reviews.length === 0 ? (
-                    <p className="text-muted-foreground">No reviews yet.</p>
-                ) : (
-                    reviews.map((review: any) => (
-                        <div
-                            key={review._id}
-                            className="border p-3 rounded-md mb-4 space-y-2"
+                <h3 className="text-lg font-semibold mb-4">Đánh giá:</h3>
+                {showAlreadyReviewedMessage ? (
+                    <div className="text-center py-8">
+                        <div className="text-4xl mb-2">✅</div>
+                        <p className="text-gray-600">Bạn đã đánh giá sản phẩm này rồi</p>
+                        <Button 
+                            variant="outline" 
+                            onClick={() => window.history.back()}
+                            className="mt-4"
                         >
-                            <div className="flex items-center justify-between">
-                                <div className="font-medium">
-                                    {review.comment}
-                                </div>
-                                <div className="text-sm">
-                                    Rating: {review.rating} ⭐
-                                </div>
-                            </div>
-
-                            {review.images?.length > 0 && (
-                                <div className="flex gap-2 mt-2 flex-wrap">
-                                    {review.images.map(
-                                        (url: string, idx: number) => (
-                                            <Image
-                                                key={idx}
-                                                src={url}
-                                                alt={`review-img-${idx}`}
-                                                width={80}
-                                                height={80}
-                                                className="rounded border"
+                            Quay lại đơn hàng
+                        </Button>
+                    </div>
+                ) : (
+                    <>
+                        <ReviewCard
+                            reviews={currentReviews}
+                            productId={id as string}
+                            orderId={orderId || undefined}
+                            deliveryId={deliveryId || undefined}
+                            productName={product.name}
+                            onReviewCreated={() => {
+                                // Invalidate and refetch reviews query
+                                queryClient.invalidateQueries({ queryKey: ["reviews"] });
+                            }}
+                        />
+                        
+                        {/* Review Pagination */}
+                        {totalReviewPages > 1 && (
+                            <div className="flex justify-center mt-6">
+                                <Pagination>
+                                    <PaginationContent>
+                                        <PaginationItem>
+                                            <PaginationPrevious 
+                                                onClick={() => setCurrentReviewPage(prev => Math.max(1, prev - 1))}
+                                                className={currentReviewPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
                                             />
-                                        )
-                                    )}
-                                </div>
-                            )}
-
-                            {review.userId._id !== currentUserId && (
-                                <button
-                                    className="text-red-500 underline text-sm"
-                                    onClick={() => {
-                                        setSelectedReviewId(review._id);
-                                        setOpenReport(true);
-                                    }}
-                                >
-                                    Report
-                                </button>
-                            )}
-                        </div>
-                    ))
+                                        </PaginationItem>
+                                        
+                                        {Array.from({ length: totalReviewPages }, (_, i) => i + 1).map((page) => (
+                                            <PaginationItem key={page}>
+                                                <PaginationLink
+                                                    onClick={() => setCurrentReviewPage(page)}
+                                                    isActive={currentReviewPage === page}
+                                                    className="cursor-pointer"
+                                                >
+                                                    {page}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        ))}
+                                        
+                                        <PaginationItem>
+                                            <PaginationNext 
+                                                onClick={() => setCurrentReviewPage(prev => Math.min(totalReviewPages, prev + 1))}
+                                                className={currentReviewPage === totalReviewPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                            />
+                                        </PaginationItem>
+                                    </PaginationContent>
+                                </Pagination>
+                            </div>
+                        )}
+                    </>
                 )}
 
                 <Dialog open={openReport} onOpenChange={setOpenReport}>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Report Review</DialogTitle>
+                            <DialogTitle>Báo cáo</DialogTitle>
                         </DialogHeader>
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
-                                reportReview.mutate(
-                                    {
-                                        id: selectedReviewId,
-                                        reasons: selectedReasons,
-                                    },
+                                                                    reportReview.mutate(
+                                        {
+                                            id: "",
+                                            reasons: selectedReasons,
+                                        },
                                     {
                                         onSuccess: () => {
                                             toast.success("Report submitted");
@@ -368,7 +394,7 @@ export default function ProductDetail() {
                                 ))}
                             </div>
                             <DialogFooter className="mt-4">
-                                <Button type="submit">Submit Report</Button>
+                                <Button type="submit">Gửi báo cáo</Button>
                             </DialogFooter>
                         </form>
                     </DialogContent>

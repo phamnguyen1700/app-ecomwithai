@@ -140,7 +140,7 @@ export default function OrderDetailDialog({
                         <Image
                           src={item.image || ""}
                           alt={item.skuName}
-                          width={48}
+                          width={48} 
                           height={48}
                           className="w-12 h-12 object-contain mx-auto"
                         />

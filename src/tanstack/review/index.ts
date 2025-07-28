@@ -1,7 +1,8 @@
 import { get, patch, post } from "@/util/Http";
-import { deleteReviewByAdmin } from "@/zustand/services/review";
+import { deleteReviewByAdmin, getAllReview, createReview, softDeleted } from "@/zustand/services/review";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
+import { ICreateReview, IUpdateReview, ReviewResponse, ReviewListResponse } from "@/types/review";
+import { toast } from "react-toastify";
 export const useReviewAdminQuery = ({
     page,
     limit,
@@ -9,11 +10,15 @@ export const useReviewAdminQuery = ({
     page: number;
     limit: number;
 }) => {
-    return useQuery<any>({
+    return useQuery<ReviewListResponse>({
         queryKey: ["review/reported", page, limit],
-        queryFn: () => get<any>(`/review/reported?page=${page}&limit=${limit}`),
+        queryFn: async () => {
+            const res = await get<ReviewListResponse>(`/review/reported?page=${page}&limit=${limit}`);
+            return res.data;
+        },
     });
 };
+
 export const useDeleteReviewAdmin = () => {
     const queryClient = useQueryClient();
 
@@ -25,14 +30,12 @@ export const useDeleteReviewAdmin = () => {
     });
 };
 
-export const useReviewList = (filters?: any) => {
-    return useQuery<any>({
-        queryKey: ["review", filters],
+export const useReviewList = () => {
+    return useQuery<ReviewListResponse>({
+        queryKey: ["review"],
         queryFn: async () => {
-            const res = await get("/review", {
-                params: filters ?? {},
-            });
-            return res.data;
+            const res = await getAllReview();
+            return res;
         },
     });
 };
@@ -40,9 +43,17 @@ export const useReviewList = (filters?: any) => {
 export const useCreateReview = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (data: any) => post("/review", data),
+        mutationFn: async (data: ICreateReview) => {
+            const res = await createReview(data);
+            return res;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["review"] });
+            toast.success("Đã gửi đánh giá!");
+        },
+        onError: (error) => {
+            console.error("Review creation error:", error);
+            toast.error("Có lỗi xảy ra khi gửi đánh giá!");
         },
     });
 };
@@ -55,10 +66,15 @@ export const useUpdateReview = () => {
             data,
         }: {
             id: string;
-            data: { rating?: number; comment?: string; images?: string[] };
-        }) => patch(`/review/${id}`, data),
+            data: IUpdateReview;
+        }) => patch<ReviewResponse>(`/review/${id}`, data),
         onSuccess: () => {
+            toast.success("Đã cập nhật đánh giá!");
             queryClient.invalidateQueries({ queryKey: ["review"] });
+        },
+        onError: (error) => {
+            console.error("Review update error:", error);
+            toast.error("Có lỗi xảy ra khi cập nhật đánh giá!");
         },
     });
 };
@@ -76,3 +92,17 @@ export const useReportReview = () =>
             return res.data;
         },
     });
+
+export const useSoftDeleteReview = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => softDeleted(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["review"] });
+            toast.success("Đã xóa đánh giá thành công!");
+        },
+        onError: () => {
+            toast.error("Có lỗi xảy ra khi xóa đánh giá!");
+        },
+    });
+};
