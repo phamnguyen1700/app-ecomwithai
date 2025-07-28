@@ -6,6 +6,14 @@ import { useCreateProductSkuMutation } from "@/tanstack/product";
 import { useState } from "react";
 import { SkuStatus, SkuFormulationType } from "@/types/product";
 
+const formulationTypeOptions = [
+  { label: "Kem (cream)", value: "cream" },
+  { label: "Gel", value: "gel" },
+  { label: "Serum", value: "serum" },
+  { label: "Bọt (foam)", value: "foam" },
+  { label: "Lotion", value: "lotion" },
+];
+
 interface AddSkuDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,6 +33,14 @@ export default function AddSkuDialog({ isOpen, onClose, onSuccess, productId }: 
   });
   const [error, setError] = useState("");
   const createSkuMutation = useCreateProductSkuMutation();
+
+  // Debug log
+  console.log("Current sku state:", sku);
+  console.log("formulationType value:", sku.formulationType);
+  console.log("formulationType type:", typeof sku.formulationType);
+  console.log("formulationTypeOptions:", formulationTypeOptions);
+  console.log("Selected option:", formulationTypeOptions.find(opt => opt.value === sku.formulationType));
+
 
   const handleConfirm = async () => {
     if (!sku.variantName || !sku.price || !sku.stock || !sku.status || !sku.formulationType) {
@@ -63,7 +79,7 @@ export default function AddSkuDialog({ isOpen, onClose, onSuccess, productId }: 
             <Label>Loại bột</Label>
             <select
               className="w-full border rounded px-2 py-2 text-sm"
-              value={sku.formulationType}
+              value={sku.formulationType || ""}
               onChange={e => setSku(s => ({ ...s, formulationType: e.target.value as SkuFormulationType }))}
             >
               <option value="">Chọn loại</option>

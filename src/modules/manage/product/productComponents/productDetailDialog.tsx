@@ -33,6 +33,14 @@ const skinTypeOptions = [
     { label: "Da nhạy cảm", value: "sensitive" },
 ];
 
+const formulationTypeOptions = [
+    { label: "Kem (cream)", value: "cream" },
+    { label: "Gel", value: "gel" },
+    { label: "Serum", value: "serum" },
+    { label: "Bọt (foam)", value: "foam" },
+    { label: "Lotion", value: "lotion" },
+];
+
 export default function ProductDetailDialog({
     product,
     isOpen,
@@ -47,14 +55,15 @@ export default function ProductDetailDialog({
         skinConcerns: product?.skinConcerns || [],
         suitableForSkinTypes: product?.suitableForSkinTypes || [],
         isActive: product?.isActive ?? true,
-        skus: product?.skus?.map((sku: ISku) => ({
-            _id: sku._id,
-            variantName: sku.variantName,
-            price: sku.price,
-            stock: sku.stock,
-            discount: sku.discount,
-            status: sku.status,
-        })) || [],
+                        skus: product?.skus?.map((sku: ISku) => ({
+                    _id: sku._id,
+                    variantName: sku.variantName,
+                    price: sku.price,
+                    stock: sku.stock,
+                    discount: sku.discount,
+                    status: sku.status,
+                    formulationType: sku.formulationType,
+                })) || [],
     }));
 
     const updateProductMutation = useUpdateProductMutation();
@@ -90,6 +99,7 @@ export default function ProductDetailDialog({
                     stock: sku.stock,
                     discount: sku.discount,
                     status: sku.status,
+                    formulationType: sku.formulationType,
                 })) || [],
             });
         }
@@ -113,6 +123,7 @@ export default function ProductDetailDialog({
                     stock: sku.stock,
                     discount: sku.discount,
                     status: sku.status,
+                    formulationType: sku.formulationType,
                 })) || [],
             });
         }
@@ -138,7 +149,8 @@ export default function ProductDetailDialog({
                 sku.price !== oldSku.price ||
                 sku.stock !== oldSku.stock ||
                 sku.discount !== oldSku.discount ||
-                sku.status !== oldSku.status
+                sku.status !== oldSku.status ||
+                sku.formulationType !== oldSku.formulationType
             ) {
                 return sku;
             }
@@ -299,7 +311,21 @@ export default function ProductDetailDialog({
                                                     </div>
                                                     <div>
                                                         <Label>Loại bột</Label>
-                                                        <Input value={sku.formulationType} readOnly />
+                                                        <select
+                                                            className="w-full border rounded px-2 py-2 text-sm"
+                                                            value={sku.formulationType}
+                                                            onChange={e => {
+                                                                const newSkus = [...form.skus];
+                                                                newSkus[idx].formulationType = e.target.value;
+                                                                setForm(f => ({ ...f, skus: newSkus }));
+                                                            }}
+                                                        >
+                                                            {formulationTypeOptions.map((option) => (
+                                                                <option key={option.value} value={option.value}>
+                                                                    {option.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>

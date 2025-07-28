@@ -46,7 +46,6 @@ export default function UserTable() {
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string>("all");
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,10 +63,7 @@ export default function UserTable() {
       (user.fullname && user.fullname.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    // Additional role filter
-    const additionalRoleMatch = roleFilter === "all" || user.role === roleFilter;
-    
-    return roleMatch && searchMatch && additionalRoleMatch;
+    return roleMatch && searchMatch;
   });
 
   // Pagination logic
@@ -188,7 +184,7 @@ export default function UserTable() {
     <>
       {/* Filters */}
       <div className="mb-4 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="max-w-md">
           {/* Search Input */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -209,18 +205,6 @@ export default function UserTable() {
               </Button>
             )}
           </div>
-
-          {/* Role Filter */}
-          <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger>
-              <SelectValue placeholder="Vai trò" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="user">User</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
