@@ -7,7 +7,7 @@ import { useState } from "react";
 import EditDetailList from "@/components/common/editDetailList";
 import CheckboxBadge from "@/components/common/checkboxBadge";
 import { useCreateProductMutation } from "@/tanstack/product";
-import StatusToggleBadge from "@/components/common/statusToggleBadge";
+// import StatusToggleBadge from "@/components/common/statusToggleBadge";
 
 const skinTypeOptions = [
   { label: "Da thường", value: "normal" },
@@ -30,7 +30,6 @@ export default function ProductAddnewDialog({ isOpen, onClose }: ProductAddnewDi
     ingredients: string[];
     skinConcerns: string[];
     suitableForSkinTypes: string[];
-    isActive: boolean;
   }>({
     name: "",
     brand: "",
@@ -38,7 +37,6 @@ export default function ProductAddnewDialog({ isOpen, onClose }: ProductAddnewDi
     ingredients: [],
     skinConcerns: [],
     suitableForSkinTypes: [],
-    isActive: true,
   });
 
   const createProductMutation = useCreateProductMutation();
@@ -120,7 +118,7 @@ export default function ProductAddnewDialog({ isOpen, onClose }: ProductAddnewDi
                     ))}
                   </div>
                 </div>
-                {/* Trạng thái */}
+                {/* Trạng thái
                 <div className="flex py-1 gap-4">
                   <div className="min-w-[120px] font-semibold text-sm">Trạng thái</div>
                   <div className="text-sm">
@@ -129,7 +127,7 @@ export default function ProductAddnewDialog({ isOpen, onClose }: ProductAddnewDi
                       onChange={newStatus => setForm(f => ({ ...f, isActive: newStatus }))}
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
