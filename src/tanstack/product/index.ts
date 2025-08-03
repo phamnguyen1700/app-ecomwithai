@@ -52,10 +52,18 @@ export const useUploadSkuImages = () => {
             return result as ISku;
         },
         onSuccess: (data, variables) => {
-            toast.success("Thêm ảnh thành công");
+            toast.success("Upload ảnh thành công!");
             queryClient.invalidateQueries({
                 queryKey: ["sku", variables.skuId],
             });
+            // Invalidate product queries để refresh dữ liệu sản phẩm
+            queryClient.invalidateQueries({
+                queryKey: ["product"],
+            });
+        },
+        onError: (error) => {
+            toast.error("Upload ảnh thất bại!");
+            console.error("Upload error:", error);
         },
     });
 };
@@ -73,10 +81,18 @@ export const useDeletedSkuImages = () => {
             return result as ISku;
         },
         onSuccess: (data, variables) => {
-            toast.success("Xóa ảnh thành công");
+            toast.success("Xóa ảnh thành công!");
             queryClient.invalidateQueries({
                 queryKey: ["sku", variables.skuId],
             });
+            // Invalidate product queries để refresh dữ liệu sản phẩm
+            queryClient.invalidateQueries({
+                queryKey: ["product"],
+            });
+        },
+        onError: (error) => {
+            toast.error("Xóa ảnh thất bại!");
+            console.error("Delete error:", error);
         },
     });
 };
@@ -165,5 +181,13 @@ export const useDeleteProductSkuMutation = () => {
 export const useGetProductDetailMutation = () => {
     return useMutation({
         mutationFn: (id: string) => getProductDetail(id),
+        onSuccess: (variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["product", variables],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["product"],
+            });
+        },
     });
 };
