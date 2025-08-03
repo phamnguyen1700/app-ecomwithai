@@ -55,15 +55,16 @@ export default function ProductDetailDialog({
         skinConcerns: product?.skinConcerns || [],
         suitableForSkinTypes: product?.suitableForSkinTypes || [],
         isActive: product?.isActive ?? true,
-                        skus: product?.skus?.map((sku: ISku) => ({
-                    _id: sku._id,
-                    variantName: sku.variantName,
-                    price: sku.price,
-                    stock: sku.stock,
-                    discount: sku.discount,
-                    status: sku.status,
-                    formulationType: sku.formulationType,
-                })) || [],
+        skus: product?.skus?.map((sku: ISku) => ({
+            _id: sku._id,
+            variantName: sku.variantName,
+            price: sku.price,
+            stock: sku.stock,
+            discount: sku.discount,
+            status: sku.status,
+            formulationType: sku.formulationType,
+            images: sku.images || [],
+        })) || [],
     }));
 
     const updateProductMutation = useUpdateProductMutation();
@@ -100,6 +101,7 @@ export default function ProductDetailDialog({
                     discount: sku.discount,
                     status: sku.status,
                     formulationType: sku.formulationType,
+                    images: sku.images || [],
                 })) || [],
             });
         }
@@ -124,6 +126,7 @@ export default function ProductDetailDialog({
                     discount: sku.discount,
                     status: sku.status,
                     formulationType: sku.formulationType,
+                    images: sku.images || [],
                 })) || [],
             });
         }
@@ -372,7 +375,14 @@ export default function ProductDetailDialog({
                                                         <option value="discontinued">Ngừng bán</option>
                                                     </select>
                                                 </div>
-                                                <SkuImagesUpload sku={sku} />
+                                                <SkuImagesUpload 
+                                                    sku={product?.skus?.find((s: ISku) => s._id === sku._id) || sku} 
+                                                    onImagesChange={() => {
+                                                        if (product) {
+                                                            getProductDetailMutation.mutate(product._id || '');
+                                                        }
+                                                    }}
+                                                />
                                                 <Button className="h-8 bg-[color:var(--tertiary)] text-white hover:bg-red-300 hover:text-white" variant="outline" onClick={() => handleDeleteSku(sku._id!)}>Xóa</Button>
                                             </div>
                                         </div>
