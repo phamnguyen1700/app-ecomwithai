@@ -21,6 +21,7 @@ import {
 import { IAddress } from "@/types/address";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Cart() {
     const { data: cartData, isLoading } = useCartQuery();
@@ -39,7 +40,7 @@ export default function Cart() {
     const { mutate: addAddress } = useAddAddressMutation();
     const { register, handleSubmit, reset } = useForm();
     const [isAddingAddress, setIsAddingAddress] = useState(false);
-
+    const queryClient = useQueryClient();
 
     const handleCheckout = () => {
         try {
@@ -59,7 +60,8 @@ export default function Cart() {
                 toast.success("Thêm địa chỉ thành công");
                 reset();
                 setIsAddingAddress(false);
-                // Có thể refetch lại addressData nếu cần
+                // refetch lại addressData nếu cần
+                queryClient.invalidateQueries({ queryKey: ["address"] });
             },
             onError: () => {
                 toast.error("Thêm địa chỉ thất bại");
@@ -71,7 +73,7 @@ export default function Cart() {
         <Popover>
             <PopoverTrigger asChild>
                 <div className="relative cursor-pointer">
-                    <Icon name="shoppingBag" size={24} />
+                    <Icon name="shoppingBag" size={30} className="text-gray-800" />
                     {cartCount > 0 && (
                         <Badge
                             variant="destructive"
@@ -112,7 +114,7 @@ export default function Cart() {
                                             <span className="text-lg">×</span>
                                         </button>
                                         <div className="w-14 h-14 flex-shrink-0 relative">
-                                            <Image src={image || '/assets/blank.png'} alt={skuName} fill className="object-cover rounded" />
+                                            <Image src={image || '/assets/blank.jpg'} alt={skuName} fill className="object-cover rounded" />
                                         </div>
                                         <div className="flex-1 ml-3 flex flex-col justify-between h-full">
                                             <div className="font-medium text-xs line-clamp-1">{skuName}</div>

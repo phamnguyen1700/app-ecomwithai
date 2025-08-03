@@ -27,7 +27,7 @@ export const useSetDefaultAddressMutation = () => {
 
 export const useAddressesQuery = () => {
     return useQuery({
-        queryKey: ['addresses'],
+        queryKey: ['address'],
         queryFn: () => getAllAddress(),
     });
 };

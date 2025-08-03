@@ -12,7 +12,7 @@ const ShowInfo: React.FC<FlexSectionProps> = ({
     onButtonClick,
     width = 500,
     height = 300,
-    textRight = false,
+    textRight = false,  
     border = false,
     bigTitle = false,
     children,

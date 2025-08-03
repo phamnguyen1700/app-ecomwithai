@@ -7,6 +7,20 @@ export const getAllProducts = async (filters = {}) => {
     });
     return res.data;
 };
+
+export const getProducts = async (filters = {}) => {
+    const res = await get<IProductResponse>("product", {
+        params: filters,
+    });
+    return res.data;
+};
+
+export const getReturnedSkus = async (filters = {}) => {
+    const res = await get<IProductResponse>("product/returned-skus", {
+        params: filters,
+    });
+    return res.data;
+};
 export const getProductDetail = async (id: string) => {
     const res = await get<IProductDetail>(`/product/${id}`);
     return res.data;

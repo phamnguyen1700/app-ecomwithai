@@ -57,10 +57,10 @@ const VerifyEmailInner = () => {
             {status === "error" && (
                 <>
                     <h1 className="text-2xl font-bold text-red-500 mb-4">
-                        Xác thực thất bại
+                        Tài khoản chưa được xác thực
                     </h1>
                     <p className="text-muted-foreground">
-                        Vui lòng kiểm tra lại đường dẫn xác thực.
+                        Vui lòng kiểm tra lại đường dẫn xác thực được gửi đến email của bạn.
                     </p>
                 </>
             )}

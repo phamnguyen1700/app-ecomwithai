@@ -14,7 +14,31 @@ const nextConfig: NextConfig = {
         remotePatterns: [   
             {
                 protocol: "https",
-                hostname: "**",
+                hostname: "tse1.explicit.bing.net",
+            },
+            {
+                protocol: "https",
+                hostname: "yoosun.vn",
+            },
+            {
+                protocol: "https",
+                hostname: "blogchamsoc.com",
+            },
+            {
+                protocol: "https",
+                hostname: "file.hstatic.net",
+            },
+            {
+                protocol: "https",
+                hostname: "vitaclinic.vn",
+            },
+            {
+                protocol: "https",
+                hostname: "th.bing.com",
+            },
+            {
+                protocol: "https",
+                hostname: "storage.googleapis.com",
             },
         ],
     },

@@ -19,9 +19,9 @@ const AppDropDown = ({ title = "", items = [] }: Props) => {
     return (
         <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline">{title}</Button>
+                <Button variant="link">{title}</Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="start">
+            <DropdownMenuContent className="w-fit" align="start">
                 <DropdownMenuGroup>
                     {items.map((item: any, index: number) => {
                         if ("component" in item) {
@@ -32,6 +32,15 @@ const AppDropDown = ({ title = "", items = [] }: Props) => {
                                 >
                                     {item.component}
                                 </DropdownMenuItem>
+                            );
+                        }
+
+                        if (item.name === "divider") {
+                            return (
+                                <div
+                                    key={item.id || index}
+                                    className="border-t border-gray-200 my-1"
+                                />
                             );
                         }
 

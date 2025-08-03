@@ -42,7 +42,7 @@ export default function Report() {
     const onChange = (key: string, value: string) => {
         if (key === "email") {
             const found = users?.data?.find(
-                (u) =>
+                (u: any) =>
                     u.email &&
                     u.email.toLowerCase().includes(value.toLowerCase())
             );
@@ -57,7 +57,7 @@ export default function Report() {
     };
     const userMap = useMemo(() => {
         const map = new Map();
-        users?.data?.forEach((u) => map.set(u._id, u.email));
+        users?.data?.forEach((u: any) => map.set(u._id, u.email));
         return map;
     }, [users]);
     return (

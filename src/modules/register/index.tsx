@@ -18,7 +18,7 @@ const RegisterPage = () => {
     return (
         <AppForm
             trigger={
-                <Button variant="ghost" className="p-2">
+                <Button variant="ghost" className="p-2" data-register-trigger style={{ display: 'none' }}>
                     Đăng ký
                 </Button>
             }

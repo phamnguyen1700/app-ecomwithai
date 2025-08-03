@@ -1,10 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { formatDateToDisplay } from "@/hooks/formatDateToDisplay";
 import { Delivery } from "@/types/delievery";
 import React, { useState } from "react";
 import { useAssignDeliveryPersonnelMutation } from "@/tanstack/delivery";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateOrderStatusMutation } from "@/tanstack/order";
+import Image from "next/image";
 
 const DELIVERY_STATUS_LABELS: Record<string, string> = {
     pending: "Đang chờ phân công",
@@ -26,7 +27,8 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({ delivery, o
     // Hooks luôn ở đầu component
     const personnel = deliveryPersonnelData?.find((p) => p._id === delivery?.deliveryPersonnelId);
     const personnelEmail = personnel?.email || delivery?.deliveryPersonnelId || "Không có";
-    const isPending = delivery?.status === 'pending' || delivery?.status === 'assigned';
+    const isPending = delivery?.status === 'pending';
+    const isAssigned = delivery?.status === 'assigned';
     const [selectedStaff, setSelectedStaff] = useState<any | null>(null);
     const assignMutation = useAssignDeliveryPersonnelMutation();
     const queryClient = useQueryClient();
@@ -83,7 +85,7 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({ delivery, o
                         </div>
                     )}
                     <hr className="my-2" />
-                    <div className="mb-1"><b>Nhân viên giao hàng:</b> {isPending ? <span className="text-gray-500">Không có</span> : <span className="text-blue-600 font-semibold">{personnelEmail}</span>}</div>
+                    <div className="mb-1"><b>Nhân viên giao hàng:</b> {(isPending || isAssigned) ? <span className="text-gray-500">Không có</span> : <span className="text-blue-600 font-semibold">{personnelEmail}</span>}</div>
                     <div className="mb-1"><b>Ngày giao:</b> {'updatedAt' in delivery ? formatDateToDisplay(delivery.updatedAt) : '—'}</div>
                     <div className="mb-1"><b>Phí giao:</b> {delivery.deliveryFee?.toLocaleString('vi-VN')}₫</div>
                     <div className="mb-1"><b>Yêu cầu ký nhận:</b> {delivery.requiresSignature ? 'Có' : 'Không'}</div>
@@ -91,14 +93,16 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({ delivery, o
                 {delivery.status === 'delivered' && 'proofOfDeliveryUrl' in delivery && (delivery as any).proofOfDeliveryUrl && (
                     <div className="flex flex-col items-center">
                         <div className="font-bold mb-2">Ảnh xác nhận giao hàng</div>
-                        <img
+                        <Image
                             src={(delivery as any).proofOfDeliveryUrl}
                             alt="Ảnh xác nhận giao hàng"
+                            width={320}
+                            height={320}
                             className="rounded-lg border max-w-xs max-h-80 object-contain"
                         />
                     </div>
                 )}
-                {isPending && (
+                {(isPending || isAssigned) && (
                     <div>
                         <div className="font-bold mb-2">Chọn nhân viên giao hàng</div>
                         <div className="space-y-2 max-h-60 overflow-y-auto mb-4">
@@ -113,10 +117,14 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({ delivery, o
                             )) : <div className="text-gray-500">Không có nhân viên giao hàng nào</div>}
                         </div>
                         <button
-                            className="w-full bg-[#ff8a65] hover:bg-[#ff7043] text-white font-bold py-3 rounded-xl text-lg transition"
-                            disabled={!selectedStaff || assignMutation.isPending}
+                            className={`w-full font-bold py-3 rounded-xl text-lg transition ${
+                                isAssigned 
+                                    ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                                    : 'bg-[#ff8a65] hover:bg-[#ff7043] text-white'
+                            }`}
+                            disabled={!selectedStaff || assignMutation.isPending || isAssigned}
                             onClick={() => {
-                                if (selectedStaff) {
+                                if (selectedStaff && !isAssigned) {
                                     assignMutation.mutate({ deliveryId: delivery._id, deliveryPersonnelId: selectedStaff._id }, {
                                         onSuccess: () => {
                                             setSelectedStaff(null);
@@ -127,7 +135,7 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({ delivery, o
                                 }
                             }}
                         >
-                            {assignMutation.isPending ? 'Đang phân công...' : 'Phân công'}
+                            {isAssigned ? 'Đã phân công' : (assignMutation.isPending ? 'Đang phân công...' : 'Phân công')}
                         </button>
                     </div>
                 )}
@@ -148,6 +156,33 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({ delivery, o
                         }}
                     >
                         {updateOrderStatusMutation.isPending ? 'Đang hủy...' : 'Hủy đơn hàng'}
+                    </button>
+                )}
+                {delivery.status === 'delivered' && (
+                    <button
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl text-lg transition"
+                        disabled={updateOrderStatusMutation.isPending}
+                        onClick={() => {
+                            updateOrderStatusMutation.mutate(
+                                { orderId: delivery.orderId, orderStatus: 'Delivered' },
+                                {
+                                    onSuccess: () => {
+                                        onClose();
+                                        queryClient.invalidateQueries({ queryKey: ["deliveries"] });
+                                        queryClient.invalidateQueries({ queryKey: ["orders"] });
+                                    },
+                                    onError: (error) => {
+                                        console.error('[DEBUG] Lỗi xác nhận hoàn thành đơn hàng:', error);
+                                        if (error?.response) {
+                                            console.error('[DEBUG] Response status:', error.response.status);
+                                            console.error('[DEBUG] Response data:', error.response.data);
+                                        }
+                                    }
+                                }
+                            );
+                        }}
+                    >
+                        {updateOrderStatusMutation.isPending ? 'Đang hoàn thành...' : 'Hoàn thành đơn hàng'}
                     </button>
                 )}
                   </>

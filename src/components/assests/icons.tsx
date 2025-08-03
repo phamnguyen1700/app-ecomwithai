@@ -22,6 +22,10 @@ import {
     MapPin,
     BadgePercent,
     Box,
+    CheckCircle,
+    LogOut,
+    ArrowBigLeft,
+    LayoutDashboard,
 } from "lucide-react";
 
 const icons = {
@@ -47,6 +51,10 @@ const icons = {
     mapPin: MapPin,
     badgePercent: BadgePercent,
     box: Box,
+    review: CheckCircle,
+    logout: LogOut,
+    return: ArrowBigLeft,
+    dash: LayoutDashboard,
 };
 
 interface IconProps extends LucideProps {

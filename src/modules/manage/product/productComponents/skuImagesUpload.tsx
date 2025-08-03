@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 
 function SkuImagesUpload({ sku }: { sku: ISku }) {
+    console.log(sku.images)
     const [fileList, setFileList] = useState<UploadFile<any>[]>(
         (sku.images || []).map((url: string, idx: number) => ({
             uid: String(idx),

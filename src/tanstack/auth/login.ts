@@ -1,3 +1,4 @@
+import { post } from "@/util/Http";
 import { getMe } from "@/zustand/services/auth/getMe";
 import { loginApi } from "@/zustand/services/auth/login";
 import { useAuthStore } from "@/zustand/store/userAuth";
@@ -22,25 +23,24 @@ export const useLogin = () => {
         },
         onSuccess: async (userWithToken) => {
             setUser(userWithToken);
-            // if (!userWithToken.isVerified) {
-            //     try {
-            //         await post("/user/verify-email");
-            //         toast.warn(
-            //             "Tài khoản chưa xác thực. Đã gửi email xác thực!"
-            //         );
-            //         router.push("/verify-email");
-            //     } catch {
-            //         toast.error("Không thể gửi email xác thực.");
-            //     }
-            // } else {
-            toast.success("Đăng nhập thành công!");
-            if (userWithToken.role === "admin") {
-                router.push("/manage/dashboard");
+            if (!userWithToken.isVerified) {
+                try {
+                    await post("/user/verify-email");
+                    toast.warn(
+                        "Tài khoản chưa xác thực. Đã gửi email xác thực!"
+                    );
+                    router.push("/verify-email");
+                } catch {
+                    toast.error("Không thể gửi email xác thực.");
+                }
             } else {
-                router.push("/ecom/home");
+                toast.success("Đăng nhập thành công!");
+                if (userWithToken.role === "admin") {
+                    router.push("/manage/dashboard");
+                } else {
+                    router.push("/ecom/home");
+                }
             }
-
-            // }
         },
         onError: () => {
             toast.error("Đăng nhập thất bại!");
